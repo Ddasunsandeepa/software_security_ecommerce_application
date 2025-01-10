@@ -33,14 +33,17 @@ Follow these steps to set up the project locally:
 
 1. Clone the Repository
 
-   git clone https://github.com/Ddasunsandeepa/software_security_ecommerce_application.git
-   cd software_security_ecommerce_application
+   1. git clone https://github.com/Ddasunsandeepa/software_security_ecommerce_application.git
+   2. cd software_security_ecommerce_application
+   3. clodinary_Config_Clod_Name = "dxqzjvplk"
+   4. clodinary_Config_api_key = "261339675268571"
+   5. clodinary_Config_api_secret = "8O3qtB301XjS0DaxDrcywwJKNR8"
 
-2. Install Dependencies
+3. Install Dependencies
    Run the following command to install dependencies for both the client and server:
    npm install
 
-3. Set Up Environment Variables
+4. Set Up Environment Variables
    Create .env files for both the client and the server based on the provided examples:
 
 ### Example Frontend .env:
