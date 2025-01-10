@@ -39,11 +39,11 @@ Follow these steps to set up the project locally:
    4. clodinary_Config_api_key = "261339675268571"
    5. clodinary_Config_api_secret = "8O3qtB301XjS0DaxDrcywwJKNR8"
 
-3. Install Dependencies
+2. Install Dependencies
    Run the following command to install dependencies for both the client and server:
    npm install
 
-4. Set Up Environment Variables
+3. Set Up Environment Variables
    Create .env files for both the client and the server based on the provided examples:
 
 ### Example Frontend .env:
