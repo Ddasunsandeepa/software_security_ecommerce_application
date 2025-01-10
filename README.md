@@ -103,4 +103,9 @@ Install the Prettier - Code formatter extension in VSCode for auto-formatting on
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
+![Screenshot 2025-01-10 085514](https://github.com/user-attachments/assets/f7277506-6c46-4640-a0c4-ba525edd1a10)
+![Screenshot 2025-01-10 085524](https://github.com/user-attachments/assets/b0272acd-d0da-4c5a-a7f2-1ff1098c6444)
+
+
+
 ### ✨ Happy Coding! 🚀
