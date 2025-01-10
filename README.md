@@ -20,14 +20,14 @@ A secure e-commerce platform for food ordering, built with the MERN stack. This 
 
 ## ✨ Features
 
-🔥 Node.js: Scalable backend logic.
-🚀 Express.js: Flexible request and route handling.
-📦 Mongoose: Schema-based modeling for MongoDB data.
-💻 React: Responsive and reusable UI components.
-🌀 Redux: Centralized state management.
-🌐 Redux Thunk: Efficient handling of asynchronous actions.
-🔑 Multi-Factor Authentication (MFA): Extra secure login.
-🛡️ Encryption: Protects sensitive data like passwords and payment details.
+- 🔥 Node.js: Scalable backend logic.
+- 🚀 Express.js: Flexible request and route handling.
+- 📦 Mongoose: Schema-based modeling for MongoDB data.
+- 💻 React: Responsive and reusable UI components.
+- 🌀 Redux: Centralized state management.
+- 🌐 Redux Thunk: Efficient handling of asynchronous actions.
+- 🔑 Multi-Factor Authentication (MFA): Extra secure login.
+- 🛡️ Encryption: Protects sensitive data like passwords and payment details.
 
 Follow these steps to set up the project locally:
 
