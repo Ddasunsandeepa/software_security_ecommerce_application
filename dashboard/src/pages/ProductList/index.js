@@ -4,8 +4,17 @@ import { FaUserCircle } from "react-icons/fa";
 import Box from "../Dashboard/components/Box";
 import { FaCartShopping } from "react-icons/fa6";
 import LoadingBar from "react-top-loading-bar";
+import CircularProgress from "@mui/material/CircularProgress";
 import { IoBagHandleSharp } from "react-icons/io5";
-import { Button, LinearProgress, Menu, MenuItem, Rating } from "@mui/material";
+import {
+  Button,
+  Grid,
+  InputLabel,
+  LinearProgress,
+  Menu,
+  MenuItem,
+  Rating,
+} from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { FaPencil } from "react-icons/fa6";
@@ -21,7 +30,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-toastify/dist/ReactToastify.css";
-import { deleteData, fetchDataFromApi } from "../../utils/Api";
+import { deleteData, editData, fetchDataFromApi } from "../../utils/Api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TextField from "@mui/material/TextField";
@@ -32,6 +41,12 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+
+const StyledFormControl = styled(FormControl)({
+  marginTop: 6,
+  marginBottom: 6,
+});
+
 // Styled Components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": {
@@ -108,6 +123,17 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
 
 const itemsPerPage = 5; // Number of items per page
 const ProductList = () => {
+  const [formFields, setFormFields] = useState({
+    name: "",
+    description: "",
+    images: "",
+    isFeatured: false,
+    type: "",
+    category: "",
+    price: "",
+  });
+  const [editId, setEditId] = useState(null);
+  const [open, setOpen] = useState(false);
   const [showBy, setshowBy] = React.useState("");
   const [catBy, setCatBy] = React.useState("");
   const [currentPage, setCurrentPage] = useState(1); // Track current page
@@ -115,6 +141,7 @@ const ProductList = () => {
   const context = useContext(Mycontext);
   const loadingBarRef = useRef(null);
   const [progress, setProgress] = useState(0);
+  const [catData, setCatData] = useState([]);
 
   const [confirmDelete, setConfirmDelete] = useState(false); // Controls dialog visibility
   const [deleteProductId, setDeleteProductId] = useState(null); // Tracks ID of product to delete
@@ -148,6 +175,24 @@ const ProductList = () => {
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    context.setisHideSidebarAndHeader(false);
+    window.scrollTo(0, 0);
+
+    loadingBarRef.current.continuousStart();
+
+    fetchDataFromApi("/api/category")
+      .then((res) => {
+        if (res) {
+          setCatData(res);
+        }
+      })
+      .finally(() => {
+        // Complete loading
+        loadingBarRef.current.complete();
+      });
+  }, [context]);
 
   useEffect(() => {
     context.setisHideSidebarAndHeader(false);
@@ -198,7 +243,90 @@ const ProductList = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const editproduct = (id) => {
+    setFormFields({
+      name: "",
+      description: "",
+      images: "",
+      isFeatured: false,
+      type: "",
+      category: "", // Reset category
+      price: "",
+    });
 
+    setOpen(true);
+    setEditId(id);
+
+    fetchDataFromApi(`/api/products/${id}`).then((res) => {
+      if (res) {
+        setFormFields({
+          name: res.name,
+          description: res.description,
+          images: res.images,
+          isFeatured: res.isFeatured || false,
+          type: res.type || "",
+          category: res.category || "", // Load category data
+          price: res.price || "",
+        });
+      }
+    });
+  };
+
+  const proEdit = (e) => {
+    e.preventDefault();
+    setIsLoading(true); // Set loading to true when editing starts
+    const imagesToUpdate = Array.isArray(formFields.images)
+      ? formFields.images
+      : [formFields.images];
+
+    const updatedProduct = {
+      ...formFields,
+      images: imagesToUpdate,
+    };
+
+    editData(`/api/products/${editId}`, updatedProduct)
+      .then(() => {
+        fetchDataFromApi("/api/products").then((res) => {
+          if (res) {
+            setproductList(res);
+          }
+          setOpen(false);
+          setIsLoading(false); // Hide loading when update is complete
+          toast.success("product updated successfully!");
+        });
+      })
+      .catch(() => {
+        toast.error("Failed to update the Product.");
+        setIsLoading(false); // Hide loading if there's an error
+      });
+  };
+  const inputDropDownChange = (e) => {
+    setFormFields((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const inputChange = (e) => {
+    setFormFields((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const addimgurl = (e) => {
+    setFormFields((prevState) => ({
+      ...prevState,
+      images: e.target.value,
+    }));
+  };
+  const handleCategoryChange = (e) => {
+    setFormFields((prevState) => ({
+      ...prevState,
+      category: e.target.value,
+    }));
+  };
   return (
     <div className="right-content ">
       <ToastContainer position="bottom-right" />
@@ -352,7 +480,10 @@ const ProductList = () => {
                       <td>{item.isFeatured ? "Yes" : "No"}</td>
                       <td>
                         <div className="actions d-flex align-items-center">
-                          <Button color="secondary">
+                          <Button
+                            color="secondary"
+                            onClick={() => editproduct(item._id)}
+                          >
                             <FaPencil />
                           </Button>
                           <Link to="/product/details">
@@ -415,6 +546,113 @@ const ProductList = () => {
           </div>
         </div>
       </div>
+      <StyledDialog open={open} onClose={handleClose}>
+        <StyledDialogTitle>Edit Category</StyledDialogTitle>
+        <DialogContent>
+          <form onSubmit={proEdit}>
+            <StyledTextField
+              autoFocus
+              margin="dense"
+              label="Category Name"
+              name="name"
+              value={formFields.name}
+              onChange={inputChange}
+              fullWidth
+            />
+            <StyledTextField
+              autoFocus
+              margin="dense"
+              label="Description "
+              name="description"
+              value={formFields.description}
+              onChange={inputChange}
+              fullWidth
+            />
+            <StyledTextField
+              margin="dense"
+              label="Image URL"
+              name="images"
+              value={formFields.images}
+              onChange={addimgurl}
+              fullWidth
+            />
+            <StyledTextField
+              margin="dense"
+              label="Price"
+              name="price"
+              value={formFields.price}
+              onChange={inputChange}
+              fullWidth
+            />
+            <StyledFormControl fullWidth margin="dense">
+              <InputLabel>Category</InputLabel>
+              <Select
+                value={formFields.category}
+                onChange={handleCategoryChange}
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {catData.length !== 0 &&
+                  catData?.map((cat, index) => {
+                    return (
+                      <MenuItem value={cat.id} key={index}>
+                        {cat.name}
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </StyledFormControl>
+            <Grid container spacing={2}>
+              {/* Is Featured Dropdown */}
+              <Grid item xs={6}>
+                <StyledFormControl fullWidth margin="dense">
+                  <InputLabel>Is Featured</InputLabel>
+                  <Select
+                    name="isFeatured"
+                    value={formFields.isFeatured.toString()} // Convert boolean to string
+                    onChange={(e) =>
+                      setFormFields({
+                        ...formFields,
+                        isFeatured: e.target.value === "true",
+                      })
+                    }
+                  >
+                    <MenuItem value="true">Yes</MenuItem>
+                    <MenuItem value="false">No</MenuItem>
+                  </Select>
+                </StyledFormControl>
+              </Grid>
+
+              {/* Vegetarian/Non-Vegetarian Dropdown */}
+              <Grid item xs={6}>
+                <StyledFormControl fullWidth margin="dense">
+                  <InputLabel>Type</InputLabel>
+                  <Select
+                    name="type"
+                    value={formFields.type}
+                    onChange={inputDropDownChange}
+                  >
+                    <MenuItem value="Vegetarian">Vegetarian</MenuItem>
+                    <MenuItem value="Non-Vegetarian">Non-Vegetarian</MenuItem>
+                  </Select>
+                </StyledFormControl>
+              </Grid>
+            </Grid>
+            <StyledDialogActions>
+              <StyledButton onClick={handleClose} color="secondary">
+                Cancel
+              </StyledButton>
+
+              <StyledButton type="submit" variant="contained">
+                {isLoading ? <CircularProgress size={24} /> : "Save Changes"}
+              </StyledButton>
+            </StyledDialogActions>
+          </form>
+        </DialogContent>
+      </StyledDialog>
     </div>
   );
 };
