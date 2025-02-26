@@ -8,7 +8,7 @@ require("dotenv/config");
 app.use(cors());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:3001"],
   })
 );
 app.options("*", cors());

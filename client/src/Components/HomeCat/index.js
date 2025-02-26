@@ -1,27 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
+import { fetchDataFromApi } from "../../utils/Api";
 
-const HomeCat = () => {
-  const [itemBg, setItemBg] = useState([
-    "#fde4e1", // Very Light Coral
-    "#ffe6e6", // Very Light Pink
-    "#fff2e5", // Very Light Peach
-    "#f7f3fc", // Very Light Lavender
-    "#faf8d8", // Very Light Khaki
-    "#fff8cc", // Light Gold
-    "#e0f7ff", // Very Light Blue
-    "#e6ffe6", // Very Light Green
-    "#ffe4ec", // Very Light Pink
-    "#fff5f5", // Very Light Misty Rose
-    "#fdfde1", // Very Light Goldenrod
-    "#f0ffff", // Very Light Cyan
-    "#f8f0f8", // Very Light Thistle
-    "#fff4e0", // Very Light Wheat
-    "#fff8f0", // Very Light Linen
-  ]);
+const HomeCat = (props) => {
+  const [catData, setCatdata] = useState([]);
+  useEffect(() => {
+    fetchDataFromApi("/api/category").then((res) => {
+      setCatdata(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    setCatdata(props.catData);
+  }, [props.catData]);
 
   return (
     <section className="homeCat">
@@ -43,18 +37,17 @@ const HomeCat = () => {
           modules={[Navigation]}
           className="mySwiper"
         >
-          {itemBg?.map((item, index) => {
+          {catData?.map((cat, index) => {
             return (
               <SwiperSlide>
                 <div
                   className="item text-center cursor"
-                  style={{ background: item }}
+                  style={{ background: cat.color }}
                 >
-                  <img
-                    src="https://adminsc.pizzahut.lk//images/mainmenu/52b93289-98a9-4296-87a4-0a0e0acda8c6.jpg"
-                    alt=""
-                  />
-                  <h6 style={{ color: "black" }} className="mt-3">Pizza Mania</h6>
+                  <img src={cat.images[0]} alt="" />
+                  <h6 style={{ color: "black" }} className="mt-3">
+                    {cat.name}
+                  </h6>
                 </div>
               </SwiperSlide>
             );

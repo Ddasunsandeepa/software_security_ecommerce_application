@@ -1,7 +1,7 @@
 import { Button, Rating } from "@mui/material";
 import HomeBanner from "../../Components/HomeBanner";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -10,8 +10,16 @@ import ProductItem from "../../Components/ProductItem/ProductItem";
 import HomeCat from "../../Components/HomeCat";
 import newsBanner from "../../assets/images/coupon.png";
 import { IoMailOutline } from "react-icons/io5";
+import { fetchDataFromApi } from "../../utils/Api";
 
 const Home = () => {
+  const [catData, setCatdata] = useState([]);
+  useEffect(() => {
+    fetchDataFromApi("/api/category").then((res) => {
+      setCatdata(res);
+    });
+  }, []);
+
   var settings = {
     dots: true,
     infinite: false,
@@ -25,7 +33,8 @@ const Home = () => {
   return (
     <>
       <HomeBanner />
-      <HomeCat />
+      {catData?.length !== 0 && <HomeCat catData={catData} />}
+      {/* <HomeCat /> */}
       <section className="homeProducts">
         <div className="container-fluid">
           <div className="row">
