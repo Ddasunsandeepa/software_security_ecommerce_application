@@ -115,9 +115,13 @@ function App() {
               <Route path="/signUp" element={<SignUp />} />
               <Route path="/product/details" element={<ProductDetails />} />
               <Route path="/product/list" element={<ProductList />} />
+              <Route path="/product/edit/{_id}" element={<ProductList />} />
+              <Route path="/product/delete/{_id}" element={<ProductList />} />
               <Route path="/product/upload" element={<ProductUpload />} />
               <Route path="/category/add" element={<CategoryAdd />} />
               <Route path="/category/list" element={<CategoryList />} />
+              <Route path="/category/edit/{_id}" element={<CategoryList />} />
+              <Route path="/category/delete/{_id}" element={<CategoryList />} />
             </Routes>
           </div>
         </div>

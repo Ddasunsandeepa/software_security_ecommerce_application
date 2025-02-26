@@ -319,18 +319,23 @@ const CategoryList = () => {
                     <td>{item.description}</td>
                     <td>
                       <div className="actions d-flex align-items-center">
-                        <Button
-                          color="secondary"
-                          onClick={() => editCat(item._id)}
-                        >
-                          <FaPen />
-                        </Button>
-                        <Button
-                          color="error"
-                          onClick={() => openDeleteDialog(item._id)}
-                        >
-                          <MdDelete />
-                        </Button>
+                        <Link to="/category/edit/{_id}">
+                          <Button
+                            color="secondary"
+                            onClick={() => editCat(item._id)}
+                          >
+                            <FaPen />
+                          </Button>
+                        </Link>
+                        <Link to="/category/delete/{_id}">
+                          <Button
+                            color="error"
+                            onClick={() => openDeleteDialog(item._id)}
+                          >
+                            <MdDelete />
+                          </Button>
+                        </Link>
+
                         <Dialog
                           open={confirmDelete}
                           onClose={closeDeleteDialog}

@@ -480,23 +480,27 @@ const ProductList = () => {
                       <td>{item.isFeatured ? "Yes" : "No"}</td>
                       <td>
                         <div className="actions d-flex align-items-center">
-                          <Button
-                            color="secondary"
-                            onClick={() => editproduct(item._id)}
-                          >
-                            <FaPencil />
-                          </Button>
+                          <Link to="/product/edit/{_id}">
+                            <Button
+                              color="secondary"
+                              onClick={() => editproduct(item._id)}
+                            >
+                              <FaPencil />
+                            </Button>
+                          </Link>
                           <Link to="/product/details">
                             <Button color="success">
                               <FaEye />
                             </Button>
                           </Link>
-                          <Button
-                            color="error"
-                            onClick={() => openDeleteDialog(item._id)} // Pass product ID to open delete dialog
-                          >
-                            <MdDelete />
-                          </Button>
+                          <Link to="/product/delete/{_id}">
+                            <Button
+                              color="error"
+                              onClick={() => openDeleteDialog(item._id)} // Pass product ID to open delete dialog
+                            >
+                              <MdDelete />
+                            </Button>
+                          </Link>
                           <Dialog
                             open={confirmDelete}
                             onClose={closeDeleteDialog}
