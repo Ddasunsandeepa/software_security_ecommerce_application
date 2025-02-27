@@ -491,9 +491,47 @@ const ProductList = () => {
                       </td>
                       <td>{item.isFeatured ? "Yes" : "No"}</td>
                       <td>
-                        {Array.isArray(item.size)
-                          ? item.size.join(", ")
-                          : item.size}
+                        {Array.isArray(item.size) ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "8px",
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            {item.size.map((size, index) => (
+                              <span
+                                key={index}
+                                style={{
+                                  backgroundColor: "#007bff", // Blue background
+                                  color: "#fff", // White text
+                                  padding: "5px 8px",
+                                  borderRadius: "20px",
+                                  fontWeight: "bold",
+                                  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                                  transition: "all 0.3s ease",
+                                }}
+                                className="size-badge"
+                              >
+                                {size}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span
+                            style={{
+                              backgroundColor: "#007bff", // Blue background
+                              color: "#fff", // White text
+                              padding: "5px 8px",
+                              borderRadius: "20px",
+                              fontWeight: "bold",
+                              boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                              transition: "all 0.3s ease",
+                            }}
+                          >
+                            {item.size}
+                          </span>
+                        )}
                       </td>
 
                       <td>
