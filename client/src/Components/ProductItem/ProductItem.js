@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { TfiFullscreen } from "react-icons/tfi";
@@ -7,15 +7,17 @@ import { Rating } from "@mui/material";
 import { IoMdHeartEmpty } from "react-icons/io";
 import ProductModel from "../ProductModal";
 import { Link } from "react-router-dom";
+import { Mycontext } from "../../App";
 
 const ProductItem = (props) => {
-  const [isOpenProductModal, setIsOpenProductModal] = useState(false);
+  const context = useContext(Mycontext);
 
-  const viewProductDetails = (id) => {
-    setIsOpenProductModal(true);
+  const viewProductDetails = (_id) => {
+    context.setisOpenProductModel({ _id: _id, open: true }); // Correct function call
   };
+
   const closeProductModel = () => {
-    setIsOpenProductModal(false);
+    context.setisOpenProductModel({ id: "", open: false });
   };
 
   const handleLinkClick = () => {
@@ -45,7 +47,7 @@ const ProductItem = (props) => {
             className="actions"
             style={{ position: "absolute", top: 10, right: 10 }}
           >
-            <Button onClick={() => viewProductDetails(1)}>
+            <Button onClick={() => viewProductDetails(props.item?._id)}>
               <TfiFullscreen />
             </Button>
             <Button>
@@ -56,7 +58,7 @@ const ProductItem = (props) => {
         <Link to="/product/1" onClick={handleLinkClick}>
           <div className="info">
             <h3 style={{ fontSize: 20, textAlign: "left" }}>
-              {props.item?.name?.substr(0, 25) + "..."}
+              {props.item?.name}
             </h3>
             <h4>{props.item?.description?.substr(0, 80) + "..."}</h4>
             <span className="text-success d-block">
@@ -80,7 +82,7 @@ const ProductItem = (props) => {
         </Link>
       </div>
 
-      {isOpenProductModal && (
+      {context.isOpenProductModal && (
         <ProductModel closeProductModel={closeProductModel} />
       )}
     </>

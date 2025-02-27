@@ -7,8 +7,26 @@ import QuantityBox from "../QuantityDropDown";
 import { FaHeart } from "react-icons/fa6";
 import { MdCompareArrows } from "react-icons/md";
 import ProductZoom from "../ProductZoom";
+import { useContext, useEffect, useState } from "react";
+import { Mycontext } from "../../App";
+import { fetchDataFromApi } from "../../utils/Api";
 
 const ProductModel = (props) => {
+  const [catData, setCatData] = useState([]);
+  const content = useContext(Mycontext);
+
+  useEffect(() => {
+    fetchDataFromApi("/api/category").then((res) => {
+      if (res) {
+        setCatData(res);
+      }
+    });
+  }, []);
+  const categoryName =
+    props?.data?.category && catData.length > 0
+      ? catData.find((cat) => cat._id === props?.data?.category)?.name
+      : null;
+  console.log(categoryName);
   return (
     <>
       <Dialog
@@ -20,19 +38,17 @@ const ProductModel = (props) => {
         <Button className="close" onClick={props.closeProductModel}>
           <IoMdClose />
         </Button>
-        <h4 className="mb-2 font-weight-bold">
-          Delicious BBQ Chicken Pizza. Very tasty meals
-        </h4>
+        <h4 className="mb-2 font-weight-bold">{props?.data?.name}</h4>
         <div className="d-flex align-items-center">
           <div className="d-flex align-items-center mr-4">
             <span>Category:</span>
             <span className="ml-2">
-              <b>Pizza's</b>
+              <b>{categoryName}</b>
             </span>
           </div>
           <Rating
             name="read-only"
-            value={5}
+            value={Number(props?.data?.rating)}
             size="small"
             precision={0.5}
             readOnly
@@ -41,19 +57,19 @@ const ProductModel = (props) => {
         <hr />
         <div className="row mt-2 productDetaileModel">
           <div className="col-md-5">
-            <ProductZoom />
+            <ProductZoom images={props?.data?.images} />
           </div>
           <div className="col-md-7">
             <div className="d-flex info align-items-center mb-3">
-              <span className="oldPrice lg mr-3">$30.00</span>
-              <span className="netPrice lg text-danger">$16.00</span>
+              <span className="oldPrice lg mr-3">${props?.data?.oldPrice}</span>
+              <span className="netPrice lg text-danger">
+                ${props?.data?.price}
+              </span>
             </div>
-            <span className="badge bg-success">IN STOCK</span>
-            <p className="mt-3">
-              Vivamus adipiscing nisl ut dolor dignissim semper. Nulla luctus
-              malesuada tincidunt. Class aptent taciti sociosqu ad litora
-              torquent
-            </p>
+            <span className="badge bg-success">
+              {props?.data?.countInStock}
+            </span>
+            <p className="mt-3">{props?.data?.description}</p>
             <div className="d-flex align-items-center">
               <QuantityBox />
 

@@ -23,17 +23,17 @@ async function uploadImages(images) {
 
 // Get all products with populated category
 router.get(`/`, async (req, res) => {
-  // const filterKey = req.query.product;
-  // console.log(filterKey);
-  // if (filterKey !== undefined) {
-  //   const productList = await Product.find({ isFeatured: false });
-  //   if (!productList) {
-  //     res.status(500).json({ success: false });
-  //   }
-  //   return res.status(200).json({
-  //     products: productList,
-  //   });
-  // }
+  const filterKey = req.query.product;
+  console.log(filterKey);
+  if (filterKey !== undefined) {
+    const productList = await Product.find({ isFeatured: false });
+    if (!productList) {
+      res.status(500).json({ success: false });
+    }
+    return res.status(200).json({
+      products: productList,
+    });
+  }
   try {
     const productList = await Product.find().populate("category");
     res.send(productList);

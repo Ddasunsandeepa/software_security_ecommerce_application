@@ -11,31 +11,52 @@ import ProductDetails from "./Pages/ProductDetails";
 import Cart from "./Pages/Cart";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
+import ProductModel from "./Components/ProductModal";
+import { fetchDataFromApi } from "./utils/Api";
 
 const Mycontext = createContext();
 
 function App() {
   const [countrList, setCountrList] = useState([]);
   const [selectCity, setSelectCity] = useState("");
-  const [isOpenProductModel, setisOpenProductModel] = useState(false);
+  const [isOpenProductModel, setisOpenProductModel] = useState({
+    id: "",
+    open: false,
+  });
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setisLogin] = useState(false);
+  const [productData, setProductData] = useState(null);
 
   useEffect(() => {
     getCountry("https://countriesnow.space/api/v0.1/countries");
   }, []);
 
+  useEffect(() => {
+    // alert(isOpenProductModel._id);
+    fetchDataFromApi(`/api/products/${isOpenProductModel._id}`)
+      .then((data) => {
+        console.log(data); // Log the data to ensure you're getting the response
+        setProductData(data); // Set the fetched product data
+      })
+      .catch((error) => {
+        console.error("Error fetching product data:", error);
+      });
+  }, [isOpenProductModel]);
+
   const getCountry = async (url) => {
-    const resposive = await axios.get(url).then((res) => {
-      setCountrList(res.data.data[196].cities);
-      console.log(res.data.data[196].cities);
-    });
+    const response = await axios.get(url);
+    setCountrList(response.data.data[196].cities);
+  };
+
+  const closeProductModel = () => {
+    setisOpenProductModel({ id: "", open: false });
   };
 
   const values = {
     countrList,
     setSelectCity,
     selectCity,
+    isOpenProductModel,
     setisOpenProductModel,
     isHeaderFooterShow,
     setIsHeaderFooterShow,
@@ -46,7 +67,7 @@ function App() {
   return (
     <BrowserRouter>
       <Mycontext.Provider value={values}>
-        {isHeaderFooterShow === true && <Header />}
+        {isHeaderFooterShow && <Header />}
 
         <Routes>
           <Route path="/" element={<Home />} />
@@ -56,12 +77,20 @@ function App() {
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
         </Routes>
-        {isHeaderFooterShow === true && <Footer />}
+
+        {isHeaderFooterShow && <Footer />}
+
+        {/* ✅ Show modal only when it's open */}
+        {isOpenProductModel.open && (
+          <ProductModel
+            data={productData}
+            closeProductModel={closeProductModel}
+          />
+        )}
       </Mycontext.Provider>
     </BrowserRouter>
   );
 }
 
 export default App;
-
 export { Mycontext };
