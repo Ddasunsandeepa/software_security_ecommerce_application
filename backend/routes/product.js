@@ -23,6 +23,17 @@ async function uploadImages(images) {
 
 // Get all products with populated category
 router.get(`/`, async (req, res) => {
+  // const filterKey = req.query.product;
+  // console.log(filterKey);
+  // if (filterKey !== undefined) {
+  //   const productList = await Product.find({ isFeatured: false });
+  //   if (!productList) {
+  //     res.status(500).json({ success: false });
+  //   }
+  //   return res.status(200).json({
+  //     products: productList,
+  //   });
+  // }
   try {
     const productList = await Product.find().populate("category");
     res.send(productList);
@@ -31,6 +42,16 @@ router.get(`/`, async (req, res) => {
       .status(500)
       .json({ success: false, message: "Failed to retrieve products." });
   }
+});
+
+//isfeatures finding
+
+router.get(`/featured`, async (req, res) => {
+  const productList = await Product.find({ isFeatured: true });
+  if (!productList) {
+    res.status(500).json({ success: false });
+  }
+  return res.status(200).json(productList);
 });
 
 // Get product by ID

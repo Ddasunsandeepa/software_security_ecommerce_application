@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { TfiFullscreen } from "react-icons/tfi";
@@ -21,6 +21,9 @@ const ProductItem = (props) => {
   const handleLinkClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  useEffect(() => {
+    console.log(props.item);
+  });
 
   return (
     <>
@@ -31,7 +34,7 @@ const ProductItem = (props) => {
             style={{ position: "relative", zIndex: 1 }}
           >
             <img
-              src="https://adminsc.pizzahut.lk//images/mainmenu/c4f8dd31-4c4e-41e8-be57-3f0c4e32e13d.jpg"
+              src={props.item?.images[0]}
               alt="Product"
               className="w-100"
               style={{ objectFit: "cover", display: "block" }}
@@ -40,7 +43,7 @@ const ProductItem = (props) => {
               className="badge badge-primary"
               style={{ position: "absolute", top: 10, left: 10 }}
             >
-              28%
+              {props.item?.discount}%
             </span>
             <div
               className="actions"
@@ -55,19 +58,23 @@ const ProductItem = (props) => {
             </div>
           </div>
           <div className="info">
-            <h4>Delicious BBQ Chicken Pizza. Very tasty meals</h4>
-            <span className="text-success d-block">In Stock</span>
+            <h4>{props.item?.description}</h4>
+            <span className="text-success d-block">
+              {props.item?.countInStock}
+            </span>
             <Rating
               name="read-only"
-              value={4}
+              value={props.item?.rating}
               readOnly
               size="small"
               precision={0.5}
               className="rating mt-2 mb-2"
             />
             <div className="d-flex txt">
-              <span className="oldPrice">$30.00</span>
-              <span className="netPrice text-danger ml-2">$16.00</span>
+              <span className="oldPrice">${props.item?.price}</span>
+              <span className="netPrice text-danger ml-2">
+                ${props.item?.oldPrice}
+              </span>
             </div>
           </div>
         </div>

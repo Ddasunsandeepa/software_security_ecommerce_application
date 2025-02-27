@@ -21,13 +21,13 @@ const HomeCat = (props) => {
     <section className="homeCat">
       <div className="container">
         <h3 className=" hd" style={{ color: "balck" }}>
-          FEATURED DISHES
+          FEATURED CATEGORIES
         </h3>
         <p className="text-light text-sml mb-4 mt-0">
           Do not miss the current offers until the end of November
         </p>
         <Swiper
-          slidesPerView={7}
+          slidesPerView={9}
           autoplay={true}
           spaceBetween={16}
           slidesPerGroup={2}

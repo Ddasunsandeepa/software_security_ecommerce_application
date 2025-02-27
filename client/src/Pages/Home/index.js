@@ -14,9 +14,13 @@ import { fetchDataFromApi } from "../../utils/Api";
 
 const Home = () => {
   const [catData, setCatdata] = useState([]);
+  const [featuredProducts, setfeaturedProducts] = useState([]);
   useEffect(() => {
     fetchDataFromApi("/api/category").then((res) => {
       setCatdata(res);
+    });
+    fetchDataFromApi(`/api/products/featured`).then((res) => {
+      setfeaturedProducts(res);
     });
   }, []);
 
@@ -79,24 +83,14 @@ const Home = () => {
                   modules={[Navigation]}
                   className="mySwiper"
                 >
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
+                  {featuredProducts?.length !== 0 &&
+                    featuredProducts?.map((item, index) => {
+                      return (
+                        <SwiperSlide key={index}>
+                          <ProductItem item={item}/>
+                        </SwiperSlide>
+                      );
+                    })}
                 </Swiper>
               </div>
               <div className="d-flex align-items-center mt-5">
