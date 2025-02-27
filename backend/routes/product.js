@@ -54,6 +54,7 @@ router.get(`/featured`, async (req, res) => {
   return res.status(200).json(productList);
 });
 
+
 // Get product by ID
 router.get("/:id", async (req, res) => {
   try {

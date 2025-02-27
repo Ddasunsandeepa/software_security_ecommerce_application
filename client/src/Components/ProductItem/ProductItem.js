@@ -27,38 +27,38 @@ const ProductItem = (props) => {
 
   return (
     <>
-      <Link to="/product/1" onClick={handleLinkClick}>
-        <div className={`item productItem ${props.itemView}`}>
-          <div
-            className="imgWrapper"
-            style={{ position: "relative", zIndex: 1 }}
+      <div className={`item productItem ${props.itemView}`}>
+        <div className="imgWrapper" style={{ position: "relative", zIndex: 1 }}>
+          <img
+            src={props.item?.images[0]}
+            alt="Product"
+            className="w-100"
+            style={{ objectFit: "cover", display: "block" }}
+          />
+          <span
+            className="badge badge-primary"
+            style={{ position: "absolute", top: 10, left: 10 }}
           >
-            <img
-              src={props.item?.images[0]}
-              alt="Product"
-              className="w-100"
-              style={{ objectFit: "cover", display: "block" }}
-            />
-            <span
-              className="badge badge-primary"
-              style={{ position: "absolute", top: 10, left: 10 }}
-            >
-              {props.item?.discount}%
-            </span>
-            <div
-              className="actions"
-              style={{ position: "absolute", top: 10, right: 10 }}
-            >
-              <Button onClick={() => viewProductDetails(1)}>
-                <TfiFullscreen />
-              </Button>
-              <Button>
-                <IoMdHeartEmpty style={{ fontSize: "20px" }} />
-              </Button>
-            </div>
+            {props.item?.discount}%
+          </span>
+          <div
+            className="actions"
+            style={{ position: "absolute", top: 10, right: 10 }}
+          >
+            <Button onClick={() => viewProductDetails(1)}>
+              <TfiFullscreen />
+            </Button>
+            <Button>
+              <IoMdHeartEmpty style={{ fontSize: "20px" }} />
+            </Button>
           </div>
+        </div>
+        <Link to="/product/1" onClick={handleLinkClick}>
           <div className="info">
-            <h4>{props.item?.description}</h4>
+            <h3 style={{ fontSize: 20, textAlign: "left" }}>
+              {props.item?.name?.substr(0, 25) + "..."}
+            </h3>
+            <h4>{props.item?.description?.substr(0, 80) + "..."}</h4>
             <span className="text-success d-block">
               {props.item?.countInStock}
             </span>
@@ -77,8 +77,8 @@ const ProductItem = (props) => {
               </span>
             </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
 
       {isOpenProductModal && (
         <ProductModel closeProductModel={closeProductModel} />

@@ -15,12 +15,18 @@ import { fetchDataFromApi } from "../../utils/Api";
 const Home = () => {
   const [catData, setCatdata] = useState([]);
   const [featuredProducts, setfeaturedProducts] = useState([]);
+  const [mealsProducts, setmealsProducts] = useState([]);
   useEffect(() => {
     fetchDataFromApi("/api/category").then((res) => {
+      console.log(res);
       setCatdata(res);
     });
     fetchDataFromApi(`/api/products/featured`).then((res) => {
       setfeaturedProducts(res);
+    });
+    fetchDataFromApi(`/api/products`).then((res) => {
+      setmealsProducts(res);
+      console.log(res);
     });
   }, []);
 
@@ -66,7 +72,7 @@ const Home = () => {
                 <div className="info w-75">
                   <h3 className="mb-0 hd">SPECIAL OFFERS</h3>
                   <p className="text-light text-sml mb-0">
-                    Do not miss the current offers until the end of November
+                    Do not miss the current offers until the end of March
                   </p>
                 </div>
                 <Button className="viewAllBtn ml-9">
@@ -87,7 +93,7 @@ const Home = () => {
                     featuredProducts?.map((item, index) => {
                       return (
                         <SwiperSlide key={index}>
-                          <ProductItem item={item}/>
+                          <ProductItem item={item} />
                         </SwiperSlide>
                       );
                     })}
@@ -104,64 +110,54 @@ const Home = () => {
                   View All <IoIosArrowRoundForward />
                 </Button>
               </div>
-              <div className="productRow productRow2 w-100 mt-4">
-                {/* First Swiper (Row 1) */}
-                <Swiper
-                  slidesPerView={4}
-                  spaceBetween={12}
-                  pagination={{ clickable: true }}
-                  modules={[Navigation]}
-                  className="mySwiper"
-                >
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                </Swiper>
-              </div>
-              <div className="productRow productRow2 w-100 mt-4">
-                {/* Second Swiper (Row 2) */}
-                <Swiper
-                  slidesPerView={4}
-                  spaceBetween={12}
-                  pagination={{ clickable: true }}
-                  modules={[Navigation]}
-                  className="mySwiper"
-                >
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <ProductItem />
-                  </SwiperSlide>
-                </Swiper>
-              </div>
+              {mealsProducts?.length !== 0 &&
+                (() => {
+                  const filteredMeals = mealsProducts.filter(
+                    (item) => item.category?.name?.toLowerCase() === "meal"
+                  );
+                  const firstRow = filteredMeals.slice(0, 6); // First 6 items
+                  const secondRow = filteredMeals.slice(6); // Remaining items
+
+                  return (
+                    <>
+                      <div className="productRow productRow2 w-100 mt-4">
+                        {/* First Swiper (Row 1) */}
+                        <Swiper
+                          slidesPerView={4}
+                          spaceBetween={12}
+                          pagination={{ clickable: true }}
+                          modules={[Navigation]}
+                          className="mySwiper"
+                        >
+                          {firstRow.map((item, index) => (
+                            <SwiperSlide key={index}>
+                              <ProductItem item={item} />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                      </div>
+
+                      {secondRow.length > 0 && ( // Only show second row if there are more than 6 items
+                        <div className="productRow productRow2 w-100 mt-4">
+                          {/* Second Swiper (Row 2) */}
+                          <Swiper
+                            slidesPerView={4}
+                            spaceBetween={12}
+                            pagination={{ clickable: true }}
+                            modules={[Navigation]}
+                            className="mySwiper"
+                          >
+                            {secondRow.map((item, index) => (
+                              <SwiperSlide key={index}>
+                                <ProductItem item={item} />
+                              </SwiperSlide>
+                            ))}
+                          </Swiper>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
 
               <div className="d-flex mt-4 mb-5 bannerSec">
                 <div className="banner">
@@ -183,13 +179,13 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <div className="d-flex align-items-center mt-3">
+      <div className="d-flex align-items-center mt-1">
         <div className="info w-75 ml-4">
           <h3 className="mb-0 hd" style={{ color: "black" }}>
             DESSERTS
           </h3>
           <p className="text-light text-sml mb-0">
-            Do not miss the current offers until the end of November
+            Do not miss the current offers until the end of March!...
           </p>
         </div>
         <Button className="viewAllBtn ml-9">
@@ -197,41 +193,150 @@ const Home = () => {
         </Button>
       </div>
       <div className="productRow w-100 mt-4">
-        <Swiper
-          slidesPerView={6}
-          spaceBetween={12}
-          pagination={{
-            clickable: true,
-          }}
-          modules={[Navigation]}
-          className="mySwiper"
-        >
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <ProductItem />
-          </SwiperSlide>
-        </Swiper>
+        {(() => {
+          const desserts = mealsProducts?.filter(
+            (item) => item.category?.name?.toLowerCase() === "dessert"
+          );
+
+          return desserts.length > 0 ? (
+            <Swiper
+              slidesPerView={5}
+              spaceBetween={12}
+              pagination={{ clickable: true }}
+              modules={[Navigation]}
+              className="mySwiper"
+              style={{ marginLeft: 15 }}
+            >
+              {desserts.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <ProductItem item={item} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="no-items-container" style={{ marginLeft: 25 }}>
+              <img
+                src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127823.jpg" // Add a beautiful "No Items" image
+                alt="No desserts available"
+                className="no-items-img"
+                height={150}
+                width={180}
+              />
+              <p className="no-items-text">
+                Oops! No delicious desserts available right now. 🍰
+              </p>
+            </div>
+          );
+        })()}
       </div>
+      <br />
+      <br />
+
+      <div className="d-flex align-items-center mt-3">
+        <div className="info w-75 ml-4">
+          <h3 className="mb-0 hd" style={{ color: "black" }}>
+            BURGERS
+          </h3>
+          <p className="text-light text-sml mb-0">
+            Juicy and delicious! Grab your favorite burger now! 🍔
+          </p>
+        </div>
+        <Button className="viewAllBtn ml-9">
+          View All <IoIosArrowRoundForward />
+        </Button>
+      </div>
+
+      <div className="productRow w-100 mt-4">
+        {(() => {
+          const burgers = mealsProducts?.filter(
+            (item) => item.category?.name?.toLowerCase() === "burger"
+          );
+
+          return burgers.length > 0 ? (
+            <Swiper
+              slidesPerView={5}
+              spaceBetween={12}
+              pagination={{ clickable: true }}
+              modules={[Navigation]}
+              className="mySwiper"
+              style={{ marginLeft: 15 }}
+            >
+              {burgers.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <ProductItem item={item} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="no-items-container" style={{ marginLeft: 25 }}>
+              <img
+                src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127823.jpg"
+                alt="No burgers available"
+                className="no-items-img"
+                height={150}
+                width={180}
+              />
+              <p className="no-items-text">
+                Oops! No tasty burgers available right now. 🍔
+              </p>
+            </div>
+          );
+        })()}
+      </div>
+      <br />
+      <br />
+      <div className="d-flex align-items-center mt-3">
+        <div className="info w-75 ml-4">
+          <h3 className="mb-0 hd" style={{ color: "black" }}>
+            DRINKS
+          </h3>
+          <p className="text-light text-sml mb-0">
+            Stay refreshed with our amazing drinks selection! 🍹
+          </p>
+        </div>
+        <Button className="viewAllBtn ml-9">
+          View All <IoIosArrowRoundForward />
+        </Button>
+      </div>
+
+      <div className="productRow w-100 mt-4">
+        {(() => {
+          const drinks = mealsProducts?.filter(
+            (item) => item.category?.name?.toLowerCase() === "drinks"
+          );
+
+          return drinks.length > 0 ? (
+            <Swiper
+              slidesPerView={5}
+              spaceBetween={12}
+              pagination={{ clickable: true }}
+              modules={[Navigation]}
+              className="mySwiper"
+              style={{ marginLeft: 15 }}
+            >
+              {drinks.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <ProductItem item={item} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="no-items-container" style={{ marginLeft: 25 }}>
+              <img
+                src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127823.jpg"
+                alt="No drinks available"
+                className="no-items-img"
+                height={150}
+                width={180}
+              />
+              <p className="no-items-text">
+                Oops! No refreshing drinks available right now. 🍹
+              </p>
+            </div>
+          );
+        })()}
+      </div>
+
       <section className="newsLetterSection mt-1 mb-3 d-flex align-items-center">
         <div className="container">
           <div className="row">
