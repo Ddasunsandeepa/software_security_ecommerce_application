@@ -12,7 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Rating from "@mui/material/Rating";
-import { Button, LinearProgress } from "@mui/material";
+import { Button, Checkbox, LinearProgress } from "@mui/material";
 import { FaCloudArrowUp } from "react-icons/fa6";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -50,6 +50,7 @@ const ProductDetails = () => {
   const loadingBarRef = useRef("");
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDisabel, setIsDisable] = useState(true);
 
   const [catData, setCatData] = useState([]);
   const imagesArr = [];
@@ -127,11 +128,12 @@ const ProductDetails = () => {
       category: event.target.value,
     }));
   };
-
   const handleSizeChange = (event) => {
-    setFormFields((prevFields) => ({
-      ...prevFields,
-      size: event.target.value,
+    const value = event.target.value; // Get selected values
+
+    setFormFields((prev) => ({
+      ...prev,
+      size: typeof value === "string" ? value.split(",") : value, // Ensure array format
     }));
   };
 
@@ -176,6 +178,15 @@ const ProductDetails = () => {
         loadingBarRef.current.complete();
       });
   }, [context]);
+
+  useEffect(() => {
+    fetchDataFromApi(`/api/products`).then((res) => {
+      setFormFields((prev) => ({
+        ...prev,
+        size: res.size || [], // Default to an empty array if undefined
+      }));
+    });
+  }, []);
 
   const isMounted = useRef(true);
 
@@ -417,21 +428,35 @@ const ProductDetails = () => {
                     <div className="form-group">
                       <h6>Size</h6>
                       <Select
-                        value={formFields.size}
+                        multiple
+                        value={
+                          formFields.size.length > 0 ? formFields.size : []
+                        } // Default empty array
                         onChange={handleSizeChange}
                         displayEmpty
-                        inputProps={{ "aria-label": "Without label" }}
+                        inputProps={{ "aria-label": "Select sizes" }}
                         className="w-100"
+                        renderValue={
+                          (selected) =>
+                            selected.length === 0 ? "None" : selected.join(", ") // Show "None" if empty
+                        }
                       >
-                        <MenuItem value="">
+                        <MenuItem value="None" disabled>
                           <em>None</em>
                         </MenuItem>
-                        <MenuItem value="Small">Small</MenuItem>
-                        <MenuItem value="Medium">Medium</MenuItem>
-                        <MenuItem value="Large">Large</MenuItem>
+
+                        {["Small", "Medium", "Large", "Supreme"].map((size) => (
+                          <MenuItem key={size} value={size}>
+                            <Checkbox
+                              checked={formFields.size.includes(size)}
+                            />
+                            {size}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </div>
                   </div>
+
                   <div className="col-md-3 ml-3">
                     <div className="form-group mt-3 ml-3">
                       <h6>Rating</h6>

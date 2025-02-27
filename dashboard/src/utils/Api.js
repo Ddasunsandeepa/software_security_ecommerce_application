@@ -20,11 +20,31 @@ export const postData = async (url, formData) => {
     return null;
   }
 };
+// export const editData = async (url, updateData) => {
+//   const { res } = await axios.put(`http://localhost:4000${url}`, updateData);
+//   return res;
+// };
+// export const deleteData = async (url) => {
+//   const { res } = await axios.delete(`http://localhost:4000${url}`);
+//   return res;
+// };
+
 export const editData = async (url, updateData) => {
-  const { res } = await axios.put(`http://localhost:4000${url}`, updateData);
-  return res;
+  try {
+    const { data } = await axios.put(`http://localhost:4000${url}`, updateData);
+    return data;
+  } catch (error) {
+    console.error("Edit error:", error);
+    return null;
+  }
 };
+
 export const deleteData = async (url) => {
-  const { res } = await axios.delete(`http://localhost:4000${url}`);
-  return res;
+  try {
+    const { data } = await axios.delete(`http://localhost:4000${url}`);
+    return data;
+  } catch (error) {
+    console.error("Delete error:", error);
+    return null;
+  }
 };

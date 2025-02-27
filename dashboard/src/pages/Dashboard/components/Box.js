@@ -1,39 +1,52 @@
-import React from "react";
-import { HiDotsVertical } from "react-icons/hi";
-import Button from "@mui/material/Button";
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+import axios from "axios";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import { Button, Menu, MenuItem } from "@mui/material";
+import { HiDotsVertical } from "react-icons/hi";
 import { IoIosTimer } from "react-icons/io";
 
-const options = ["Last Day", "Last Week", "Last Month", "Last Year"]; // Add your menu options here
+const socket = io("http://localhost:4000"); // Connect to backend
 
 const Box = (props) => {
   const ITEM_HEIGHT = 48;
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  useEffect(() => {
+    // Fetch initial count
+    const fetchTotalProducts = async () => {
+      try {
+        const response = await axios.get(props.apiUrl);
+        setTotalProducts(response.data.count);
+      } catch (error) {
+        console.error("Error fetching total products:", error);
+      }
+    };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+    fetchTotalProducts();
 
-  const colors = props.color || ["#000", "#ccc"]; // Default colors if no props.color is passed
+    // Listen for real-time updates
+    socket.on("productCountUpdate", (count) => {
+      setTotalProducts(count);
+    });
+
+    return () => {
+      socket.off("productCountUpdate");
+    };
+  }, [props.apiUrl]);
 
   return (
     <div
       className="dashboardBox"
       style={{
-        backgroundImage: `linear-gradient(to right, ${colors[0]}, ${colors[1]})`,
+        backgroundImage: `linear-gradient(to right, ${props.color[0]}, ${props.color[1]})`,
         cursor: "pointer",
       }}
     >
-      {/* Trending icon */}
-      {props.grow === true ? (
+      {props.grow ? (
         <span className="chart">
           <TrendingUpIcon />
         </span>
@@ -43,32 +56,27 @@ const Box = (props) => {
         </span>
       )}
 
-      {/* Main Content */}
       <div
         className="content-container pt-0"
         style={{ display: "flex", justifyContent: "space-between" }}
       >
         <div className="col1">
-          <h4 className="text-white mb-0">Total Users</h4>
-          <span className="text-white">300</span>
+          <h4 className="text-white mb-0">{props.title}</h4>
+          <span className="text-white">{totalProducts}</span>
         </div>
         <div className="icon-container">
-          {props.icon ? <span className="icon">{props.icon}</span> : ""}
+          {props.icon && <span className="icon">{props.icon}</span>}
         </div>
       </div>
 
-      {/* Bottom Elements */}
       <div
         className="d-flex align-items-center w-100 bottomEle"
-        style={{
-          marginTop: "auto", // Pushes the element to the bottom
-          paddingBottom: "1px", // Adds space at the bottom of the box
-        }}
+        style={{ marginTop: "auto", paddingBottom: "1px" }}
       >
         <h6 className="text-white mb-0 mt-0">Last Month</h6>
         <Button
           className="ml-auto toggleicon"
-          onClick={handleClick}
+          onClick={(e) => setAnchorEl(e.currentTarget)}
           style={{ minWidth: "auto", color: "#fff" }}
         >
           <HiDotsVertical />
@@ -77,26 +85,23 @@ const Box = (props) => {
           id="long-menu"
           anchorEl={anchorEl}
           open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "long-button",
-          }}
+          onClose={() => setAnchorEl(null)}
+          MenuListProps={{ "aria-labelledby": "long-button" }}
           PaperProps={{
-            style: {
-              maxHeight: ITEM_HEIGHT * 4.5,
-              width: "20ch",
-            },
+            style: { maxHeight: ITEM_HEIGHT * 4.5, width: "20ch" },
           }}
         >
-          {options.map((option) => (
-            <MenuItem
-              key={option}
-              onClick={handleClose}
-              style={{ fontSize: "16px" }}
-            >
-              <IoIosTimer style={{ marginRight: "10px" }} /> {option}
-            </MenuItem>
-          ))}
+          {["Last Day", "Last Week", "Last Month", "Last Year"].map(
+            (option) => (
+              <MenuItem
+                key={option}
+                onClick={() => setAnchorEl(null)}
+                style={{ fontSize: "16px" }}
+              >
+                <IoIosTimer style={{ marginRight: "10px" }} /> {option}
+              </MenuItem>
+            )
+          )}
         </Menu>
       </div>
     </div>

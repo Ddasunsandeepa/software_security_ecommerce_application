@@ -54,7 +54,6 @@ router.get(`/featured`, async (req, res) => {
   return res.status(200).json(productList);
 });
 
-
 // Get product by ID
 router.get("/:id", async (req, res) => {
   try {
@@ -91,6 +90,7 @@ router.post(`/create`, async (req, res) => {
       size: req.body.size,
       rating: req.body.rating,
       images: imgurl,
+      productSize: req.body.productSize,
     });
 
     product = await product.save();
@@ -135,6 +135,7 @@ router.put("/:id", async (req, res) => {
         size: req.body.size,
         rating: req.body.rating,
         images: imgurl,
+        productSize: req.body.productSize,
       },
       { new: true }
     );
@@ -148,6 +149,16 @@ router.put("/:id", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: "Error updating product." });
+  }
+});
+
+router.get("/api/products/count", async (req, res) => {
+  try {
+    const totalProducts = await Product.countDocuments(); // MongoDB query
+    res.json({ count: totalProducts });
+  } catch (error) {
+    console.error("Error fetching product count:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 

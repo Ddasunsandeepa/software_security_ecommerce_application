@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import ProductItem from "../../Components/ProductItem/ProductItem";
 import HomeCat from "../../Components/HomeCat";
 import newsBanner from "../../assets/images/coupon.png";
@@ -86,7 +86,11 @@ const Home = () => {
                   pagination={{
                     clickable: true,
                   }}
-                  modules={[Navigation]}
+                  autoplay={{
+                    delay: 3000, // Adjust delay in milliseconds (3s)
+                    disableOnInteraction: false, // Keeps autoplay running even after interaction
+                  }}
+                  modules={[Navigation, Autoplay]} // Include Autoplay module
                   className="mySwiper"
                 >
                   {featuredProducts?.length !== 0 &&

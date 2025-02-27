@@ -161,7 +161,7 @@ const ProductList = () => {
   // Handle confirm delete
   const handleDeleteConfirm = () => {
     setIsLoading(true); // Show loading indicator during deletion
-    deleteData(`/api/products/${deleteProductId}`) // Assuming deleteData handles your API deletion
+    deleteData(`/api/products/${deleteProductId}`)
       .then(() => {
         setproductList((prevData) =>
           prevData.filter((item) => item._id !== deleteProductId)
@@ -361,18 +361,29 @@ const ProductList = () => {
             color={["#1da256", "#48d483"]}
             icon={<FaUserCircle />}
             grow={true}
+            title="Total Users"
+            apiUrl="http://localhost:4000/api/users/count"
           />
         </div>
         <div className="col-md-4">
-          <Box color={["#c012e2", "#eb64fe"]} icon={<FaCartShopping />} />
+          <Box
+            color={["#c012e2", "#eb64fe"]}
+            icon={<FaCartShopping />}
+            title="Total Products"
+            apiUrl="http://localhost:4000/api/products/count"
+          />
         </div>
         <div className="col-md-4">
-          {" "}
-          <Box color={["#2c78e5", "#60aff5"]} icon={<IoBagHandleSharp />} />
+          <Box
+            color={["#2c78e5", "#60aff5"]}
+            icon={<IoBagHandleSharp />}
+            title="Total Orders"
+            apiUrl="http://localhost:4000/api/orders/count"
+          />
         </div>
 
         <div className="card shadow border-0 p-3 mt-4">
-          <h3 className="hd">Best Selling Products</h3>
+          <h3 className="hd">Selling Products</h3>
 
           {/* //there is an issue */}
           <div className="row cardFilters mt-3">
@@ -435,6 +446,7 @@ const ProductList = () => {
                   <th>PRICE</th>
                   <th>RATING</th>
                   <th>IS-FEATURED</th>
+                  <th>SIZE</th>
                   <th>ACTION</th>
                 </tr>
               </thead>
@@ -455,12 +467,12 @@ const ProductList = () => {
                             }}
                           />
                           <div>
-                            <h6>{item.name}</h6>
-                            <p>{item.description}</p>
+                            <h6 style={{ fontWeight: 700 }}>{item.name}</h6>
+                            <p>{item.description?.substr(0, 45) + "..."}</p>
                           </div>
                         </div>
                       </td>
-                      <td>{item.category.name}</td>
+                      <td style={{ fontWeight: 900 }}>{item.category.name}</td>
                       <td>{item.type}</td>
                       <td>
                         <div style={{ width: "70px" }}>
@@ -478,6 +490,12 @@ const ProductList = () => {
                         />
                       </td>
                       <td>{item.isFeatured ? "Yes" : "No"}</td>
+                      <td>
+                        {Array.isArray(item.size)
+                          ? item.size.join(", ")
+                          : item.size}
+                      </td>
+
                       <td>
                         <div className="actions d-flex align-items-center">
                           <Link to="/product/edit/{_id}">

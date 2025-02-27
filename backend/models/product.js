@@ -38,11 +38,18 @@ const productSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  size: {
-    type: String,
-    enum: ["Small", "Medium", "Large", "Supreme"], // Adjust as needed
-    default: "Medium",
-  },
+  size: [
+    {
+      type: String,
+      enum: ["Small", "Medium", "Large", "Supreme"], // Only allow these values
+    },
+  ],
+
+  productSize: [
+    {
+      type: String,
+    },
+  ],
   rating: {
     type: Number,
     default: 0,

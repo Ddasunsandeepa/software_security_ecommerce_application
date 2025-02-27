@@ -19,6 +19,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.7",
     "p-limit": "^3.1.0",
-    "project-server": "file:"
+    "project-server": "file:",
+    "socket.io": "^4.8.1"
   }
 }
