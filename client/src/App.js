@@ -11,6 +11,7 @@ import ProductDetails from "./Pages/ProductDetails";
 import Cart from "./Pages/Cart";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
+import Navigation from "./Components/Header/Navigation";
 import ProductModel from "./Components/ProductModal";
 import { fetchDataFromApi } from "./utils/Api";
 import { NoProductsFound } from "./Components/motionProduct";

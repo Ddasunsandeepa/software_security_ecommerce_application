@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaAngleDown } from "react-icons/fa6";
 import { IoIosMenu } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -11,9 +11,34 @@ import { GiHotMeal } from "react-icons/gi";
 import { FaBloggerB } from "react-icons/fa";
 import { RiContactsFill } from "react-icons/ri";
 import { FaAngleRight } from "react-icons/fa6";
+import { Mycontext } from "../../../App";
+import { fetchDataFromApi } from "../../../utils/Api";
 
-const Navigation = () => {
+const Navigation = (props) => {
+  const context = useContext(Mycontext);
+  const [mealsProducts, setmealsProducts] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
   const [isopenSidebarVal, setisopenSidebar] = useState(false);
+  const [catData, setCatdata] = useState([]);
+  useEffect(() => {
+    fetchDataFromApi("/api/category") // Fetch categories from the API
+      .then((res) => {
+        console.log(res); // Log the response to verify data
+        setCatdata(res);
+        setCategoryData(res); // Set the fetched data in the state
+      })
+      .catch((error) => {
+        console.error("Error fetching category data:", error); // Handle any fetch errors
+      });
+
+    fetchDataFromApi("/api/products") // Fetch all products
+      .then((res) => {
+        setmealsProducts(res); // Set meals products in the state
+      })
+      .catch((error) => {
+        console.error("Error fetching all products:", error);
+      });
+  }, []);
 
   return (
     <nav>
@@ -39,91 +64,27 @@ const Navigation = () => {
                 }`}
               >
                 <ul>
-                  <li>
-                    <Link to="/">
-                      <Button>
-                        Pizzas <FaAngleRight className="ml-auto" />
-                      </Button>
-                    </Link>
-                    <div className="submenu1">
-                      <Link to="/">
-                        <Button>Pepperoni Pizza</Button>
+                  {categoryData.map((category) => (
+                    <li key={category._id}>
+                      <Link to={`/cat/${category._id}`}>
+                        <Button>
+                          {category.name} <FaAngleRight className="ml-auto" />
+                        </Button>
                       </Link>
-                      <Link to="/">
-                        <Button>Margherita Pizza</Button>
-                      </Link>
-                      <Link to="/">
-                        <Button>BBQ Chicken Pizza</Button>
-                      </Link>
-                      <Link to="/">
-                        <Button>Hawaiian Pizza</Button>
-                      </Link>
-                      <Link to="/veggie-pizza">
-                        <Button>Veggie Pizza</Button>
-                      </Link>
-                      <Link to="/meat-lovers-pizza">
-                        <Button>Meat Lovers Pizza</Button>
-                      </Link>
-                      <Link to="/buffalo-chicken-pizza">
-                        <Button>Buffalo Chicken Pizza</Button>
-                      </Link>
-                    </div>
-                  </li>
-                  <li>
-                    <Link to="/">
-                      <Button>
-                        Burgers <FaAngleRight className="ml-auto" />
-                      </Button>
-                    </Link>
-                    <div className="submenu1">
-                      <Link to="/cheeseburger">
-                        <Button>Cheeseburger</Button>
-                      </Link>
-                      <Link to="/bacon-burger">
-                        <Button>Bacon Burger</Button>
-                      </Link>
-                      <Link to="/veggie-burger">
-                        <Button>Veggie Burger</Button>
-                      </Link>
-                      <Link to="/chicken-burger">
-                        <Button>Chicken Burger</Button>
-                      </Link>
-                      <Link to="/double-burger">
-                        <Button>Double Burger</Button>
-                      </Link>
-                      <Link to="/mushroom-swiss-burger">
-                        <Button>Mushroom Swiss Burger</Button>
-                      </Link>
-                      <Link to="/spicy-burger">
-                        <Button>Spicy Burger</Button>
-                      </Link>
-                    </div>
-                  </li>
-                  <li>
-                    <Link to="/">
-                      <Button>Salads</Button>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/">
-                      <Button>Pasta</Button>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/">
-                      <Button>Appetizers</Button>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/">
-                      <Button>Desserts</Button>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/">
-                      <Button>Drinks</Button>
-                    </Link>
-                  </li>
+                      <div className="submenu1">
+                        {mealsProducts
+                          .filter((product) => product.catName == category.name) // Filter products by category
+                          .map((product) => (
+                            <Link
+                              key={product._id}
+                              to={`/product/${product._id}`}
+                            >
+                              <Button>{product.name}</Button>
+                            </Link>
+                          ))}
+                      </div>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -138,149 +99,52 @@ const Navigation = () => {
                   </Button>
                 </Link>
               </li>
-              <li className="list-inline-item">
-                <Link to="/">
-                  <Button>
-                    <IoFastFood /> &nbsp;Meals
-                  </Button>
-                </Link>
-                <div className="subMenu shadow">
-                  <Link to="/">
-                    <Button>Grilled Chicken Salad</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Beef Tacos</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Vegetable Stir-Fry</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Margherita Pizza</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Pasta Primavera</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>BBQ Pulled Pork Sandwich</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Shrimp Scampi</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Lentil Soup</Button>
-                  </Link>
-                </div>
-              </li>
-              <li className="list-inline-item">
-                <Link to="/">
-                  <Button>
-                    <LuDessert />
-                    &nbsp; Dessets
-                  </Button>
-                </Link>
-                <div className="subMenu shadow">
-                  <Link to="/">
-                    <Button>Chocolate Lava Cake</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Cheesecake</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Tiramisu</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Fruit Tart</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Brownie Sundae</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Apple Pie</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Panna Cotta</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Lemon Meringue Pie</Button>
-                  </Link>
-                </div>
-              </li>
-              <li className="list-inline-item">
-                <Link to="/">
-                  <Button>
-                    <RiDrinksFill />
-                    &nbsp;Drinks
-                  </Button>
-                </Link>
-                <div className="subMenu shadow">
-                  <Link to="/">
-                    <Button>Vanilla Ice Cream</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Espresso</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Berry Compote</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Iced Tea</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Cappuccino</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Sparkling Water</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Milkshake</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Hot Cider</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Moscato Wine</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Lemonade</Button>
-                  </Link>
-                </div>
-              </li>
-              <li className="list-inline-item">
-                <Link to="/">
-                  <Button>
-                    <GiHotMeal />
-                    &nbsp;Combo
-                  </Button>
-                </Link>
-                <div className="subMenu ">
-                  <Link to="/">
-                    <Button>Chicken Salad + Lava Cake + Ice Cream</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Beef Tacos + Cheesecake + Iced Tea</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Veg Stir-Fry + Tiramisu + Coffee</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>
-                      Margherita Pizza + Fruit Tart + Sparkling Water
-                    </Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Pasta Primavera + Brownie + Milkshake</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Pulled Pork Sandwich + Apple Pie + Cider</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Shrimp Scampi + Panna Cotta + Wine</Button>
-                  </Link>
-                  <Link to="/">
-                    <Button>Lentil Soup + Lemon Pie + Lemonade</Button>
-                  </Link>
-                </div>
-              </li>
+              {/* {
+                props.navData?.length!== 0&& props.navData?.map((item,index)=>{
+                  return(
+                    
+                  )
+                })
+              } */}
+
+              {["Meal", "Dessert", "Drinks", "Combo"].map(
+                (categoryName, index) => {
+                  // Find the matching category in categoryData
+                  const category = categoryData.find(
+                    (cat) => cat.name === categoryName
+                  );
+
+                  return (
+                    <li className="list-inline-item" key={index}>
+                      <Link to={category ? `/cat/${category._id}` : "#"}>
+                        {" "}
+                        {/* Link to ID if found */}
+                        <Button>
+                          {categoryName === "Meal" && <IoFastFood />}
+                          {categoryName === "Dessert" && <LuDessert />}
+                          {categoryName === "Drinks" && <RiDrinksFill />}
+                          {categoryName === "Combo" && <GiHotMeal />}
+                          &nbsp; {categoryName}
+                        </Button>
+                      </Link>
+
+                      <div className="subMenu shadow">
+                        {mealsProducts
+                          .filter((product) => product.catName === categoryName) // Filter products by category
+                          .map((product) => (
+                            <Link
+                              key={product._id}
+                              to={`/product/${product._id}`}
+                            >
+                              <Button>{product.name}</Button>
+                            </Link>
+                          ))}
+                      </div>
+                    </li>
+                  );
+                }
+              )}
+
               <li className="list-inline-item">
                 <Link to="/">
                   <Button>

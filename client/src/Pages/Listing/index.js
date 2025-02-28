@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent } from "react";
+import React, { useState, MouseEvent, useEffect } from "react";
 import SideBar from "../../Components/SideBar";
 import banner from "../../../src/assets/img1 (3).png";
 import Button from "@mui/material/Button";
@@ -11,6 +11,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ProductItem from "../../Components/ProductItem/ProductItem";
 import Pagination from "@mui/material/Pagination";
+import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Listing = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -24,7 +26,24 @@ const Listing = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  // const location = useLocation();
 
+  // // Extract category ID from the pathname
+  // const categoryId = location.pathname.split("/")[2]; // Assuming your path is /cat/:id
+
+  // useEffect(() => {
+  //   console.log("Category ID:", categoryId);
+  //   // Log the ID to check if it's being captured
+  // }, [categoryId]);
+
+  const { id } = useParams(); // Extract 'id' from URL
+
+  useEffect(() => {
+    // Make sure to show the alert after the component is rendered
+    if (id) {
+      alert(id); // This will show the category id in an alert
+    }
+  }, [id]); // Trigger effect whenever 'id' changes
   return (
     <>
       <section className="product-Listing-page">
