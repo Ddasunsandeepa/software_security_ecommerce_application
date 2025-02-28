@@ -13,6 +13,7 @@ import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import ProductModel from "./Components/ProductModal";
 import { fetchDataFromApi } from "./utils/Api";
+import { NoProductsFound } from "./Components/motionProduct";
 
 const Mycontext = createContext();
 

@@ -15,6 +15,7 @@ import { Mycontext } from "../../App";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import NoProductsFound from "../../Components/motionProduct";
 
 const Home = (props) => {
   const [categoryData, setCategoryData] = useState([]);
@@ -184,7 +185,7 @@ const Home = (props) => {
                       </SwiperSlide>
                     ))
                   ) : (
-                    <div>No products found for this category</div>
+                    <NoProductsFound /> // Use this beautiful animated component here
                   )}
                 </Swiper>
               </div>
