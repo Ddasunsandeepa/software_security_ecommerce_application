@@ -105,7 +105,7 @@ const SideBar = ({ filters, setFilters }) => {
             value={filters.priceRange}
             onChange={handlePriceChange}
             min={10}
-            max={10000}
+            max={500}
             step={5}
             valueLabelDisplay="auto"
             className="mt-2"
@@ -114,7 +114,7 @@ const SideBar = ({ filters, setFilters }) => {
             <span>
               From: <strong>${filters.priceRange[0]}</strong>
             </span>
-            <span>
+            <span style={{marginLeft:99}}>
               To: <strong>${filters.priceRange[1]}</strong>
             </span>
           </div>
