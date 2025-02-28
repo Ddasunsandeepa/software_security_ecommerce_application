@@ -66,7 +66,7 @@ const ProductItem = (props) => {
             </span>
             <Rating
               name="read-only"
-              value={props.item?.rating}
+              value={Number(props.item?.rating)}
               readOnly
               size="small"
               precision={0.5}
