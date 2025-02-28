@@ -14,6 +14,10 @@ const productSchema = mongoose.Schema({
     ref: "Category",
     required: true,
   },
+  catName: {
+    type: String,
+    default: "",
+  },
   type: {
     type: String,
     default: "",

@@ -1,7 +1,7 @@
 import { Button, Rating } from "@mui/material";
 import HomeBanner from "../../Components/HomeBanner";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -11,8 +11,31 @@ import HomeCat from "../../Components/HomeCat";
 import newsBanner from "../../assets/images/coupon.png";
 import { IoMailOutline } from "react-icons/io5";
 import { fetchDataFromApi } from "../../utils/Api";
+import { Mycontext } from "../../App";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
 
-const Home = () => {
+const Home = (props) => {
+  const [categoryData, setCategoryData] = useState([]);
+  const [value, setValue] = React.useState(0);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  // Handle category tab change and filter products
+  const handleChange = (event, newValue) => {
+    setValue(newValue); // Update the selected tab
+
+    const selectedCategory = categoryData[newValue]; // Get selected category
+    if (selectedCategory) {
+      // Filter products by the selected category's ID
+      const filtered = featuredProducts.filter(
+        (product) => product.catName === selectedCategory.name
+      );
+      setFilteredProducts(filtered); // Update filtered products
+    }
+  };
+  // Handle tab changes
+  const context = useContext(Mycontext);
   const [catData, setCatdata] = useState([]);
   const [featuredProducts, setfeaturedProducts] = useState([]);
   const [mealsProducts, setmealsProducts] = useState([]);
@@ -23,6 +46,7 @@ const Home = () => {
     });
     fetchDataFromApi(`/api/products/featured`).then((res) => {
       setfeaturedProducts(res);
+      setFilteredProducts(res);
     });
     fetchDataFromApi(`/api/products`).then((res) => {
       setmealsProducts(res);
@@ -40,6 +64,34 @@ const Home = () => {
     autoplaySpeed: 3000,
     arrows: true,
   };
+  useEffect(() => {
+    fetchDataFromApi("/api/category") // Fetch categories from the API
+      .then((res) => {
+        console.log(res); // Log the response to verify data
+        setCategoryData(res); // Set the fetched data in the state
+      })
+      .catch((error) => {
+        console.error("Error fetching category data:", error); // Handle any fetch errors
+      });
+
+    fetchDataFromApi("/api/products/featured") // Fetch featured products
+      .then((res) => {
+        setfeaturedProducts(res); // Set featured products in the state
+        setFilteredProducts(res);
+      })
+      .catch((error) => {
+        console.error("Error fetching featured products:", error);
+      });
+
+    fetchDataFromApi("/api/products") // Fetch all products
+      .then((res) => {
+        setmealsProducts(res); // Set meals products in the state
+      })
+      .catch((error) => {
+        console.error("Error fetching all products:", error);
+      });
+  }, []);
+
   return (
     <>
       <HomeBanner />
@@ -75,10 +127,42 @@ const Home = () => {
                     Do not miss the current offers until the end of March
                   </p>
                 </div>
-                <Button className="viewAllBtn ml-9">
-                  View All <IoIosArrowRoundForward />
-                </Button>
+
+                <div className="ml-auto">
+                  <Box
+                    sx={{
+                      maxWidth: { xs: 320, sm: 480 },
+                      bgcolor: "background.paper",
+                      padding: 2,
+                    }}
+                  >
+                    <Tabs
+                      value={value}
+                      onChange={handleChange}
+                      variant="scrollable"
+                      scrollButtons="auto"
+                      aria-label="scrollable auto tabs example"
+                      sx={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      {/* Render Tab for each category */}
+                      {categoryData?.map((item, index) => (
+                        <Tab
+                          key={index}
+                          label={item.name}
+                          sx={{
+                            fontSize: "18px",
+                            padding: "10px 20px",
+                          }}
+                        />
+                      ))}
+                    </Tabs>
+                  </Box>
+                </div>
               </div>
+
+              {/* Swiper for Featured Products */}
               <div className="productRow w-100 mt-4">
                 <Swiper
                   slidesPerView={4}
@@ -87,20 +171,21 @@ const Home = () => {
                     clickable: true,
                   }}
                   autoplay={{
-                    delay: 3000, // Adjust delay in milliseconds (3s)
-                    disableOnInteraction: false, // Keeps autoplay running even after interaction
+                    delay: 3000,
+                    disableOnInteraction: false,
                   }}
                   modules={[Navigation, Autoplay]} // Include Autoplay module
                   className="mySwiper"
                 >
-                  {featuredProducts?.length !== 0 &&
-                    featuredProducts?.map((item, index) => {
-                      return (
-                        <SwiperSlide key={index}>
-                          <ProductItem item={item} />
-                        </SwiperSlide>
-                      );
-                    })}
+                  {filteredProducts?.length > 0 ? (
+                    filteredProducts.map((item, index) => (
+                      <SwiperSlide key={index}>
+                        <ProductItem item={item} />
+                      </SwiperSlide>
+                    ))
+                  ) : (
+                    <div>No products found for this category</div>
+                  )}
                 </Swiper>
               </div>
               <div className="d-flex align-items-center mt-5">
@@ -186,6 +271,56 @@ const Home = () => {
       <div className="d-flex align-items-center mt-1">
         <div className="info w-75 ml-4">
           <h3 className="mb-0 hd" style={{ color: "black" }}>
+            POPULAR PRODUCTS
+          </h3>
+          <p className="text-light text-sml mb-0">
+            Check out our most popular products with top ratings! ⭐
+          </p>
+        </div>
+        <Button className="viewAllBtn ml-9">
+          View All <IoIosArrowRoundForward />
+        </Button>
+      </div>
+      <div className="productRow w-100 mt-4">
+        {(() => {
+          const popularProducts = mealsProducts?.filter(
+            (item) => item.rating >= 4
+          );
+
+          return popularProducts.length > 0 ? (
+            <Swiper
+              slidesPerView={5}
+              spaceBetween={12}
+              pagination={{ clickable: true }}
+              modules={[Navigation]}
+              className="mySwiper"
+              style={{ marginLeft: 15 }}
+            >
+              {popularProducts.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <ProductItem item={item} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="no-items-container" style={{ marginLeft: 25 }}>
+              <img
+                src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127823.jpg" // Add a beautiful "No Items" image
+                alt="No popular products available"
+                className="no-items-img"
+                height={150}
+                width={180}
+              />
+              <p className="no-items-text">
+                Oops! No popular products available right now. 😔
+              </p>
+            </div>
+          );
+        })()}
+      </div>
+      <div className="d-flex align-items-center mt-1">
+        <div className="info w-75 ml-4">
+          <h3 className="mb-0 hd" style={{ color: "black" }}>
             DESSERTS
           </h3>
           <p className="text-light text-sml mb-0">
@@ -235,7 +370,6 @@ const Home = () => {
       </div>
       <br />
       <br />
-
       <div className="d-flex align-items-center mt-3">
         <div className="info w-75 ml-4">
           <h3 className="mb-0 hd" style={{ color: "black" }}>
@@ -249,7 +383,6 @@ const Home = () => {
           View All <IoIosArrowRoundForward />
         </Button>
       </div>
-
       <div className="productRow w-100 mt-4">
         {(() => {
           const burgers = mealsProducts?.filter(
@@ -302,7 +435,6 @@ const Home = () => {
           View All <IoIosArrowRoundForward />
         </Button>
       </div>
-
       <div className="productRow w-100 mt-4">
         {(() => {
           const drinks = mealsProducts?.filter(
@@ -340,7 +472,59 @@ const Home = () => {
           );
         })()}
       </div>
+      <br /> <br />
+      <div className="d-flex align-items-center mt-3">
+        <div className="info w-75 ml-4">
+          <h3 className="mb-0 hd" style={{ color: "black" }}>
+            COMBOS
+          </h3>
+          <p className="text-light text-sml mb-0">
+            Enjoy our delicious and satisfying meal combos! 🍽️
+          </p>
+        </div>
+        <Button className="viewAllBtn ml-9">
+          View All <IoIosArrowRoundForward />
+        </Button>
+      </div>
+      <div className="productRow w-100 mt-4">
+        {(() => {
+          const combos = mealsProducts?.filter(
+            (item) => item.category?.name?.toLowerCase() === "combo"
+          );
 
+          return combos.length > 0 ? (
+            <Swiper
+              slidesPerView={5}
+              spaceBetween={12}
+              pagination={{ clickable: true }}
+              modules={[Navigation]}
+              className="mySwiper"
+              style={{ marginLeft: 15 }}
+            >
+              {combos.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <ProductItem item={item} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="no-items-container" style={{ marginLeft: 25 }}>
+              <img
+                src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127823.jpg" // Add a beautiful "No Items" image
+                alt="No combos available"
+                className="no-items-img"
+                height={150}
+                width={180}
+              />
+              <p className="no-items-text">
+                Oops! No amazing combos available right now. 🍽️
+              </p>
+            </div>
+          );
+        })()}
+      </div>{" "}
+      <br />
+      <br />
       <section className="newsLetterSection mt-1 mb-3 d-flex align-items-center">
         <div className="container">
           <div className="row">

@@ -34,6 +34,10 @@ router.get(`/`, async (req, res) => {
       products: productList,
     });
   }
+  let productList = [];
+  if (req.query.catName !== undefined) {
+    productList = await Product.find({ catName: req.query.catName });
+  }
   try {
     const productList = await Product.find().populate("category");
     res.send(productList);
@@ -81,6 +85,7 @@ router.post(`/create`, async (req, res) => {
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,
+      catName: req.body.catName,
       type: req.body.type,
       price: req.body.price,
       oldPrice: req.body.oldPrice,
@@ -126,6 +131,7 @@ router.put("/:id", async (req, res) => {
         name: req.body.name,
         description: req.body.description,
         category: req.body.category,
+        catName: req.body.catName,
         type: req.body.type,
         price: req.body.price,
         oldPrice: req.body.oldPrice,

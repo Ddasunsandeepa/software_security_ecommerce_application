@@ -38,7 +38,7 @@ const ProductZoom = (props) => {
   return (
     <div className="productZoom">
       <div className="productZoom position-relative">
-        <div className="badge badge-primary">23%</div>
+        <div className="badge badge-primary">{props?.discount}%</div>
         <Slider {...settings2} className="zoomSliderBid" ref={zoomSliderBid}>
           {props?.images?.map((item, index) => {
             return (

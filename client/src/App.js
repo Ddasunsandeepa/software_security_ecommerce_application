@@ -26,21 +26,30 @@ function App() {
   const [isHeaderFooterShow, setIsHeaderFooterShow] = useState(true);
   const [isLogin, setisLogin] = useState(false);
   const [productData, setProductData] = useState(null);
+  const [categoryData, setCategoryData] = useState([]);
 
   useEffect(() => {
     getCountry("https://countriesnow.space/api/v0.1/countries");
   }, []);
 
   useEffect(() => {
-    // alert(isOpenProductModel._id);
-    fetchDataFromApi(`/api/products/${isOpenProductModel._id}`)
-      .then((data) => {
-        console.log(data); // Log the data to ensure you're getting the response
-        setProductData(data); // Set the fetched product data
-      })
-      .catch((error) => {
-        console.error("Error fetching product data:", error);
-      });
+    const catArr = [];
+    fetchDataFromApi("/api/category").then((res) => {
+      setCategoryData(res.categoryList);
+    });
+  }, []);
+
+  useEffect(() => {
+    isOpenProductModel.open === true &&
+      // alert(isOpenProductModel._id);
+      fetchDataFromApi(`/api/products/${isOpenProductModel._id}`)
+        .then((data) => {
+          console.log(data); // Log the data to ensure you're getting the response
+          setProductData(data); // Set the fetched product data
+        })
+        .catch((error) => {
+          console.error("Error fetching product data:", error);
+        });
   }, [isOpenProductModel]);
 
   const getCountry = async (url) => {
@@ -62,6 +71,8 @@ function App() {
     setIsHeaderFooterShow,
     isLogin,
     setisLogin,
+    categoryData,
+    setCategoryData,
   };
 
   return (

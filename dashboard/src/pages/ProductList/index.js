@@ -130,6 +130,7 @@ const ProductList = () => {
     isFeatured: false,
     type: "",
     category: "",
+    catName: "",
     price: "",
   });
   const [editId, setEditId] = useState(null);
@@ -251,6 +252,7 @@ const ProductList = () => {
       name: "",
       description: "",
       images: "",
+      catName: "",
       isFeatured: false,
       type: "",
       category: "", // Reset category
@@ -266,6 +268,7 @@ const ProductList = () => {
           name: res.name,
           description: res.description,
           images: res.images,
+          catName: res.catName,
           isFeatured: res.isFeatured || false,
           type: res.type || "",
           category: res.category || "", // Load category data
@@ -326,6 +329,9 @@ const ProductList = () => {
       ...prevState,
       category: e.target.value,
     }));
+  };
+  const selectcat = (cat) => {
+    formFields.catName = cat;
   };
   return (
     <div className="right-content ">
@@ -613,7 +619,7 @@ const ProductList = () => {
             <StyledTextField
               autoFocus
               margin="dense"
-              label="Category Name"
+              label="Product Name"
               name="name"
               value={formFields.name}
               onChange={inputChange}
@@ -658,7 +664,11 @@ const ProductList = () => {
                 {catData.length !== 0 &&
                   catData?.map((cat, index) => {
                     return (
-                      <MenuItem value={cat.id} key={index}>
+                      <MenuItem
+                        value={cat.id}
+                        key={index}
+                        onClick={() => selectcat(cat.name)}
+                      >
                         {cat.name}
                       </MenuItem>
                     );

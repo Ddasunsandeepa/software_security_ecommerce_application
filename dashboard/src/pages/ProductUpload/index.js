@@ -60,6 +60,7 @@ const ProductDetails = () => {
     name: "",
     description: "",
     category: "",
+    catName: "",
     type: "",
     price: 0,
     oldPrice: 0,
@@ -225,7 +226,9 @@ const ProductDetails = () => {
       setIsLoading(false);
     }
   };
-
+  const selectcat = (cat) => {
+    formFields.catName = cat;
+  };
   return (
     <>
       <LoadingBar
@@ -318,7 +321,11 @@ const ProductDetails = () => {
                         {catData.length !== 0 &&
                           catData?.map((cat, index) => {
                             return (
-                              <MenuItem value={cat.id} key={index}>
+                              <MenuItem
+                                value={cat.id}
+                                key={index}
+                                onClick={() => selectcat(cat.name)}
+                              >
                                 {cat.name}
                               </MenuItem>
                             );

@@ -58,7 +58,7 @@ const ProductItem = (props) => {
         <Link to="/product/1" onClick={handleLinkClick}>
           <div className="info">
             <h3 style={{ fontSize: 20, textAlign: "left" }}>
-              {props.item?.name}
+              {props.item?.name?.substr(0, 22) + "..."}
             </h3>
             <h4>{props.item?.description?.substr(0, 80) + "..."}</h4>
             <span className="text-success d-block">

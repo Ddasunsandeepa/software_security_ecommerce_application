@@ -24,9 +24,12 @@ const ProductModel = (props) => {
   }, []);
   const categoryName =
     props?.data?.category && catData.length > 0
-      ? catData.find((cat) => cat._id === props?.data?.category)?.name
-      : null;
-  console.log(categoryName);
+      ? catData.find((cat) => cat._id === props.data.category)?.name ||
+        "Unknown Category"
+      : "Unknown Category";
+
+  console.log("Category Name:", categoryName);
+
   return (
     <>
       <Dialog
@@ -57,7 +60,10 @@ const ProductModel = (props) => {
         <hr />
         <div className="row mt-2 productDetaileModel">
           <div className="col-md-5">
-            <ProductZoom images={props?.data?.images} />
+            <ProductZoom
+              images={props?.data?.images}
+              discount={props?.data?.discount}
+            />
           </div>
           <div className="col-md-7">
             <div className="d-flex info align-items-center mb-3">

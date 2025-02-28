@@ -67,7 +67,6 @@ const Header = () => {
             </div>
           </div>
         </header>
-
         <Navigation />
       </div>
     </>

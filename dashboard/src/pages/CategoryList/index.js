@@ -110,6 +110,7 @@ const CategoryList = () => {
     images: "",
     color: "",
   });
+  const [productList, setproductList] = useState([]);
   const [editId, setEditId] = useState(null);
   const context = useContext(Mycontext);
   const navigate = useNavigate();
@@ -122,21 +123,58 @@ const CategoryList = () => {
   const closeDeleteDialog = () => {
     setConfirmDelete(false); // Hide confirmation dialog
   };
-  const handleDeleteConfirm = () => {
+  // const handleDeleteConfirm = () => {
+  //   setIsLoading(true);
+  //   deleteData(`/api/category/${deleteId}`)
+  //     .then(() => {
+  //       setCatData((prevData) =>
+  //         prevData.filter((item) => item._id !== deleteId)
+  //       );
+  //       toast.success("Category deleted successfully!");
+  //       setIsLoading(false);
+  //       setConfirmDelete(false); // Close confirmation dialog
+  //     })
+  //     .catch(() => {
+  //       toast.error("Failed to delete the category.");
+  //       setIsLoading(false);
+  //     });
+  // };
+  const handleDeleteConfirm = async () => {
     setIsLoading(true);
-    deleteData(`/api/category/${deleteId}`)
-      .then(() => {
-        setCatData((prevData) =>
-          prevData.filter((item) => item._id !== deleteId)
+
+    try {
+      // Get all products related to the category
+      const relatedProducts = productList.filter(
+        (product) => product.category._id === deleteId
+      );
+
+      // If products exist, delete them first
+      if (relatedProducts.length > 0) {
+        await Promise.all(
+          relatedProducts.map((product) =>
+            deleteData(`/api/products/${product._id}`)
+          )
         );
-        toast.success("Category deleted successfully!");
-        setIsLoading(false);
-        setConfirmDelete(false); // Close confirmation dialog
-      })
-      .catch(() => {
-        toast.error("Failed to delete the category.");
-        setIsLoading(false);
-      });
+      }
+
+      // Now delete the category
+      await deleteData(`/api/category/${deleteId}`);
+
+      // Update the state after deletion
+      setCatData((prevData) =>
+        prevData.filter((item) => item._id !== deleteId)
+      );
+      setproductList((prevProducts) =>
+        prevProducts.filter((product) => product.category._id !== deleteId)
+      );
+
+      toast.success("Category and related products deleted successfully!");
+      setConfirmDelete(false); // Close confirmation dialog
+    } catch (error) {
+      toast.error("Failed to delete category or related products.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -150,6 +188,11 @@ const CategoryList = () => {
         setCatData(res);
         setIsLoading(false); // Hide loading indicator when data is fetched
       }
+    });
+
+    fetchDataFromApi("/api/products").then((res) => {
+      setproductList(res);
+      setIsLoading(false);
     });
   }, [context]);
 
