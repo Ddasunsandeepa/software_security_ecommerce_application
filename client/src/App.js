@@ -15,6 +15,8 @@ import Navigation from "./Components/Header/Navigation";
 import ProductModel from "./Components/ProductModal";
 import { fetchDataFromApi } from "./utils/Api";
 import { NoProductsFound } from "./Components/motionProduct";
+import BlogPage from "./Pages/blog/blog";
+
 
 const Mycontext = createContext();
 
@@ -59,8 +61,6 @@ function App() {
     setCountrList(response.data.data[196].cities);
   };
 
-
-
   const closeProductModel = () => {
     setisOpenProductModel({ id: "", open: false });
   };
@@ -91,6 +91,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
+          <Route path="/blog" element={<BlogPage />} />
         </Routes>
 
         {isHeaderFooterShow && <Footer />}

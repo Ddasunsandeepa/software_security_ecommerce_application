@@ -2116,3 +2116,11 @@ a:hover {
   padding: 12px 20px !important;
 }
 /* ----------------------------------------------------------------------------------------------- */
+.no-products-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; /* Adjust this height according to your needs */
+  width: 100%;
+  text-align: center;
+}

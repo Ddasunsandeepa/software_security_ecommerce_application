@@ -5,6 +5,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { fetchDataFromApi } from "../../../utils/Api";
+import NoProductsFound from "../../../Components/motionProduct";
 
 const RelatedProducts = ({ title, categoryName, currentProductId, type }) => {
   const [products, setProducts] = useState([]);
@@ -76,7 +77,9 @@ const RelatedProducts = ({ title, categoryName, currentProductId, type }) => {
               </SwiperSlide>
             ))
           ) : (
-            <p>No products found.</p>
+            <div className="no-products-container">
+              <NoProductsFound />
+            </div>
           )}
         </Swiper>
       </div>

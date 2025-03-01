@@ -12,8 +12,22 @@ import { Mycontext } from "../../App";
 import { fetchDataFromApi } from "../../utils/Api";
 
 const ProductModel = (props) => {
+  const [activeSize, setActiveSize] = useState(null); // Track selected size
+  const [sizePrice, setSizePrice] = useState(props?.data?.price);
   const [catData, setCatData] = useState([]);
   const content = useContext(Mycontext);
+  const [inputVal, setInputVal] = useState(1); // Initialize the quantity as 1
+  const [totalPrice, setTotalPrice] = useState(props?.data?.price);
+  const [quantity, setQuantity] = useState(1);
+  const [currentPrice, setCurrentPrice] = useState(0);
+  useEffect(() => {
+    // Ensure props.data is available before accessing its properties
+    if (props?.data) {
+      setSizePrice(props.data.price);
+      setTotalPrice(props.data.price * inputVal);
+      setCurrentPrice(props.data.price);
+    }
+  }, [props?.data, inputVal]); // Ensure useEffect runs when props.data is available
 
   useEffect(() => {
     fetchDataFromApi("/api/category").then((res) => {
@@ -29,7 +43,31 @@ const ProductModel = (props) => {
       : "Unknown Category";
 
   console.log("Category Name:", categoryName);
+  useEffect(() => {
+    // Update total price whenever quantity or size changes
+    if (props?.data) {
+      setTotalPrice(sizePrice * inputVal);
+    }
+  }, [inputVal, sizePrice, props?.data]);
 
+  const sizePriceIncrements = [0, 4, 6, 12];
+  const handleSizeChange = (index) => {
+    setActiveSize(index);
+    if (props?.data) {
+      setCurrentPrice(
+        (props.data.price + sizePriceIncrements[index]) * quantity
+      );
+    }
+  };
+
+  const handleQuantityChange = (newQuantity) => {
+    setQuantity(newQuantity);
+    if (props?.data) {
+      setCurrentPrice(
+        (props.data.price + sizePriceIncrements[activeSize]) * newQuantity
+      );
+    }
+  };
   return (
     <>
       <Dialog
@@ -41,7 +79,11 @@ const ProductModel = (props) => {
         <Button className="close" onClick={props.closeProductModel}>
           <IoMdClose />
         </Button>
-        <h4 className="mb-2 font-weight-bold">{props?.data?.name}</h4>
+        <h4 className="mb-2 font-weight-bold">
+          {props?.data?.name}
+          {/* {props?.data?._id}
+          {props?.data?.size} */}
+        </h4>
         <div className="d-flex align-items-center">
           <div className="d-flex align-items-center mr-4">
             <span>Category:</span>
@@ -69,15 +111,34 @@ const ProductModel = (props) => {
             <div className="d-flex info align-items-center mb-3">
               <span className="oldPrice lg mr-3">${props?.data?.oldPrice}</span>
               <span className="netPrice lg text-danger">
-                ${props?.data?.price}
+                ${currentPrice}
+                {/* Display the dynamically calculated total price */}
               </span>
             </div>
             <span className="badge bg-success">
               {props?.data?.countInStock}
             </span>
             <p className="mt-3">{props?.data?.description}</p>
+            <div className="productSize d-flex align-items-center">
+              <span>Size</span>
+              <ul className="list list-inline mb-0 pl-4">
+                {props?.data?.size.map((size, index) => (
+                  <li className="list-inline-item" key={index}>
+                    <a
+                      className={`tag ${activeSize === index ? "active" : ""}`}
+                      onClick={() => handleSizeChange(index)}
+                    >
+                      {size}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <div className="d-flex align-items-center">
-              <QuantityBox />
+              <QuantityBox
+                inputVal={quantity}
+                setInputVal={handleQuantityChange}
+              />
 
               <Button className="btn-blue btn-lg btn-big btn-round ml-1">
                 Add to Cart

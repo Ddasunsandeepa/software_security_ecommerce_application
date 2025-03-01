@@ -27,7 +27,7 @@ const Listing = () => {
   const [selectedRating, setSelectedRating] = useState(null);
   const [filters, setFilters] = useState({
     categories: [],
-    priceRange: [10, 500],
+    priceRange: [10, 10000],
     mealType: [],
   });
   useEffect(() => {
@@ -78,8 +78,10 @@ const Listing = () => {
     setCurrentPage(1); // Reset to page 1 when filters change
   }, [filters]);
   // Handle page change
-  const handlePageChange = (_, page) => {
-    setCurrentPage(page);
+  const handlePageChange = (event, page) => {
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
   };
 
   const handleClose = (rating) => {
@@ -251,15 +253,6 @@ const Listing = () => {
                   size="large"
                 />
               </div>
-              {/* <div className="d-flex tableFooter">
-                <Pagination
-                  count={Math.ceil(filteredProducts.length / productsPerPage)} // Change `data.length` to `productList.length`
-                  page={currentPage}
-                  onChange={handleChangePage}
-                  color="primary"
-                  className="pagination"
-                />
-              </div> */}
             </div>
           </div>
         </div>

@@ -12,18 +12,6 @@ const QuantityBox = ({ inputVal, setInputVal }) => {
   const plus = () => {
     setInputVal(inputVal + 1);
   };
-  // const [inputVal, setInputVal] = useState(1);
-
-  // const minus = () => {
-  //   if (inputVal === 1) {
-  //     setInputVal(1);
-  //   } else {
-  //     setInputVal(inputVal - 1);
-  //   }
-  // };
-  // const plus = () => {
-  //   setInputVal(inputVal + 1);
-  // };
   return (
     <div>
       <div className="quantityDrop d-flex align-items-center">

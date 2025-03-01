@@ -146,7 +146,7 @@ const Navigation = (props) => {
               )}
 
               <li className="list-inline-item">
-                <Link to="/">
+                <Link to="/blog">
                   <Button>
                     <FaBloggerB />
                     &nbsp;Blog
