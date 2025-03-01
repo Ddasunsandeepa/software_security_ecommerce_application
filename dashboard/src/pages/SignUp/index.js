@@ -19,7 +19,14 @@ const SignUp = () => {
   const [inputIndex, setInputIndex] = useState(null);
   const [isShowPassword, setisShowPassword] = useState(false);
   const [isShowConfirmPassword, setisShowConfirmPassword] = useState(false);
-
+  const [formFields, setFormFields] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    isAdmin: true,
+  });
   const context = useContext(Mycontext);
   useEffect(() => {
     context.setisHideSidebarAndHeader(true);
@@ -28,6 +35,16 @@ const SignUp = () => {
 
   const focusInput = (index) => {
     setInputIndex(index);
+  };
+  const onchangeInput = (e) => {
+    setFormFields(() => ({
+      ...formFields,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const signUp = (e) => {
+    e.preventDefault();
+    console.log(formFields);
   };
   return (
     <>
@@ -69,7 +86,7 @@ const SignUp = () => {
                 </h3>
               </div>
               <div className="wrapper mt-3 card border">
-                <form>
+                <form onSubmit={signUp}>
                   <div
                     className={`form-group mb-3 position-relative ${
                       inputIndex === 0 && "focus"
@@ -85,6 +102,8 @@ const SignUp = () => {
                       onFocus={() => focusInput(0)}
                       onBlur={() => setInputIndex(null)}
                       autoFocus
+                      name="name"
+                      onChange={onchangeInput}
                     />
                   </div>
                   <div
@@ -101,11 +120,31 @@ const SignUp = () => {
                       placeholder="Enter your Email"
                       onFocus={() => focusInput(1)}
                       onBlur={() => setInputIndex(null)}
+                      name="email"
+                      onChange={onchangeInput}
                     />
                   </div>
                   <div
                     className={`form-group mb-3 position-relative ${
                       inputIndex === 2 && "focus"
+                    }`}
+                  >
+                    <span className="icon">
+                      <MdEmail />
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter your Phone"
+                      onFocus={() => focusInput(2)}
+                      onBlur={() => setInputIndex(null)}
+                      name="phone"
+                      onChange={onchangeInput}
+                    />
+                  </div>
+                  <div
+                    className={`form-group mb-3 position-relative ${
+                      inputIndex === 3 && "focus"
                     }`}
                   >
                     <span className="icon">
@@ -115,8 +154,10 @@ const SignUp = () => {
                       type={`${isShowPassword === true ? "text" : "password"}`}
                       className="form-control"
                       placeholder="Enter your Password"
-                      onFocus={() => focusInput(2)}
+                      onFocus={() => focusInput(3)}
                       onBlur={() => setInputIndex(null)}
+                      name="password"
+                      onChange={onchangeInput}
                     />
                     <span
                       className="toglleShowPassword"
@@ -127,7 +168,7 @@ const SignUp = () => {
                   </div>
                   <div
                     className={`form-group mb-4 position-relative ${
-                      inputIndex === 3 && "focus"
+                      inputIndex === 4 && "focus"
                     }`}
                   >
                     <span className="icon">
@@ -139,8 +180,10 @@ const SignUp = () => {
                       }`}
                       className="form-control"
                       placeholder="Confirm your Password"
-                      onFocus={() => focusInput(3)}
+                      // onFocus={() => focusInput(4)}
                       onBlur={() => setInputIndex(null)}
+                      name="confirmPassword"
+                      onChange={onchangeInput}
                     />
                     <span
                       className="toglleShowPassword"
@@ -161,7 +204,10 @@ const SignUp = () => {
                     className=""
                   />
                   <div className="form-group">
-                    <Button className="btn-blue btn-lg btn-big w-100">
+                    <Button
+                      type="submit"
+                      className="btn-blue btn-lg btn-big w-100"
+                    >
                       Sign Up
                     </Button>
                   </div>
