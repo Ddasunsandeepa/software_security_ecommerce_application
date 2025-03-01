@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv/config");
+const authJwt = require("./helper/jwt.js");
 
 app.use(cors());
 app.use(
@@ -16,14 +17,18 @@ app.use(express.json());
 
 //middleware
 app.use(bodyParser.json());
+app.use(express.json());
+// app.use(authJwt());
 
 //Routes
+const userRoutes = require("./routes/user.js");
 const categoryRoutes = require("./routes/categories");
 const productRoutes = require("./routes/product");
 
 app.use(`/uploads`, express.static("uploads"));
 app.use(`/api/category`, categoryRoutes);
 app.use(`/api/products`, productRoutes);
+app.use(`/api/user`, userRoutes);
 
 // Connect to MongoDB
 mongoose

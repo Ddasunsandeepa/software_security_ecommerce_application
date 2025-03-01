@@ -55,7 +55,7 @@ const ProductItem = (props) => {
             </Button>
           </div>
         </div>
-        <Link to="/product/1" onClick={handleLinkClick}>
+        <Link to={`/product/${props.item?._id}`} onClick={handleLinkClick}>
           <div className="info">
             <h3 style={{ fontSize: 20, textAlign: "left" }}>
               {props.item?.name?.substr(0, 22) + "..."}
