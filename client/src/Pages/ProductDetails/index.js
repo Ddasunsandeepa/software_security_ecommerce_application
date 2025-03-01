@@ -18,13 +18,41 @@ const ProductDetails = () => {
   const [productData, setProductData] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(0);
   const { id } = useParams();
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+
+  //   fetchDataFromApi(`/api/products/${id}`).then((res) => {
+  //     setProductData(res);
+  //     console.log(res);
+  //     setCurrentPrice(res.price); // Set initial price
+  //   });
+  // }, [id]); // Re-fetch when ID changes
   useEffect(() => {
     window.scrollTo(0, 0);
 
     fetchDataFromApi(`/api/products/${id}`).then((res) => {
       setProductData(res);
-      console.log(res);
       setCurrentPrice(res.price); // Set initial price
+
+      if (res) {
+        // Get existing recently viewed products from localStorage
+        let recentlyViewed =
+          JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+
+        // Remove duplicate entries
+        recentlyViewed = recentlyViewed.filter((p) => p._id !== res._id);
+
+        // Add the new product at the beginning
+        recentlyViewed.unshift(res);
+
+        // Keep only the last 5 recently viewed products
+        if (recentlyViewed.length > 5) {
+          recentlyViewed.pop();
+        }
+
+        // Save back to localStorage
+        localStorage.setItem("recentlyViewed", JSON.stringify(recentlyViewed));
+      }
     });
   }, [id]); // Re-fetch when ID changes
 
@@ -193,11 +221,7 @@ const ProductDetails = () => {
               <br />
               {activeTabs === 0 && (
                 <div className="tabContent">
-                  <p>
-                    BBQ Chicken Pizza is crafted with a flavorful BBQ sauce,
-                    tender chicken pieces, onions, and a perfect blend of
-                    cheese. Ideal for sharing with family and friends.
-                  </p>
+                  <p>{productData.description} </p>
                 </div>
               )}
               {activeTabs === 1 && (
@@ -339,8 +363,13 @@ const ProductDetails = () => {
             </div>
           </div>
           <br />
-          <RelatedProducts title="RELATED MEALS" />
-          <RelatedProducts title="RECENTLY VIEWED PRODUCTS" />
+          <RelatedProducts
+            title="RELATED MEALS"
+            categoryName={productData.catName}
+            currentProductId={productData._id}
+            type="related"
+          />
+          <RelatedProducts title="RECENTLY VIEWED PRODUCTS" type="recent" />
         </div>
       </section>
     </div>
