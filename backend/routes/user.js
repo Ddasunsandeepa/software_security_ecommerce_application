@@ -37,30 +37,40 @@ router.post(`/signup`, async (req, res) => {
 
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
+  console.log(" Incoming request:", req.body);
 
   try {
     const existingUser = await User.findOne({ email: email });
+
     if (!existingUser) {
-      res.status(404).json({ msg: "User not found!" });
+      console.log(" User not found!");
+      return res.status(404).json({ status: false, msg: "User not found!" });
     }
 
     const matchPassword = await bcrypt.compare(password, existingUser.password);
 
     if (!matchPassword) {
-      return res.status(400).json({ msg: "Invailid credentials" });
+      console.log(" Invalid password!");
+      return res
+        .status(400)
+        .json({ status: false, msg: "Invalid credentials" });
     }
+
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id },
       process.env.JSON_WEB_TOKEN_SECRET_KEY
     );
-    res.status(200).json({
+
+    console.log(" User authenticated:", existingUser.email);
+    return res.status(200).json({
+      status: true,
       user: existingUser,
       token: token,
-      msg: "user Authenticated",
+      msg: "User Authenticated",
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ msg: "something went wrong" });
+    console.error("🔥 Server Error:", error);
+    return res.status(500).json({ status: false, msg: "Something went wrong" });
   }
 });
 

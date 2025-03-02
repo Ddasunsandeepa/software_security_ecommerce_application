@@ -105,6 +105,7 @@ const SignUp = () => {
 
     try {
       if (formFields.name === "") {
+        console.log("error");
         toast.error("🚨 Name cannot be blank!", { theme: "colored" });
         return;
       }
