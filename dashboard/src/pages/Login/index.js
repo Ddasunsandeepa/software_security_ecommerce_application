@@ -48,7 +48,9 @@ const Login = () => {
     if (formFields.password === "") {
       toast.error("🔒 Hey! Password is required to log in. Try again.", {
         theme: "colored",
+        position: "bottom-left", // 👈 This forces it to show at the bottom-left
       });
+
       return false;
     }
 
@@ -66,6 +68,7 @@ const Login = () => {
         if (res) {
           toast.success("🎉 Welcome back! Logged in successfully. 🚀", {
             theme: "colored",
+            position: "bottom-left",
           });
           setTimeout(() => {
             // history("/dashboard");

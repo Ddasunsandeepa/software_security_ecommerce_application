@@ -106,44 +106,66 @@ const SignUp = () => {
     try {
       if (formFields.name === "") {
         toast.error("🚨 Name cannot be blank!", { theme: "colored" });
-        return false;
+        return;
       }
       if (formFields.email === "") {
         toast.error("📧 Email cannot be blank!", { theme: "colored" });
-        return false;
+        return;
       }
       if (formFields.phone === "") {
         toast.error("📱 Phone number is required!", { theme: "colored" });
-        return false;
+        return;
       }
       if (formFields.password === "") {
         toast.error("🔒 Password cannot be blank!", { theme: "colored" });
-        return false;
+        return;
       }
       if (formFields.confirmPassword === "") {
         toast.error("🔁 Confirm Password is required!", { theme: "colored" });
-        return false;
+        return;
       }
       if (formFields.confirmPassword !== formFields.password) {
         toast.error("❌ Passwords do not match!", { theme: "colored" });
-        return false;
+        return;
       }
-      postData("/api/user/signup", formFields).then((res) => {
-        if (res) {
-          toast.success("✅ Account created successfully!", {
+
+      postData("/api/user/signup", formFields)
+        .then((res) => {
+          console.log("Signup Response:", res); // Debugging log
+
+          if (res && res.status === false) {
+            // 🛑 User already exists
+            toast.error("⚠️ User already exists! Try logging in.", {
+              theme: "colored",
+            });
+            return;
+          }
+
+          if (res) {
+            // ✅ Signup successful
+            toast.success("✅ Account created successfully!", {
+              theme: "colored",
+            });
+
+            setTimeout(() => {
+              history("/login");
+            }, 2000);
+          } else {
+            // ❌ General error
+            toast.error("⚠️ User already exists! Try logging in.", {
+              theme: "colored",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Signup error:", error);
+          toast.error("⚠️ User already exists! Try logging in.", {
             theme: "colored",
           });
-        } else {
-          toast.error("⚠️ Something went wrong! Try again.", {
-            theme: "colored",
-          });
-        }
-        setTimeout(() => {
-          history("/login");
-        }, 2000);
-      });
+        });
     } catch (error) {
-      console.log(error);
+      console.error("Unexpected error:", error);
+      toast.error("❌ Unexpected error occurred!", { theme: "colored" });
     }
   };
 

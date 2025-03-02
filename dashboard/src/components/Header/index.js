@@ -58,6 +58,7 @@ const Header = () => {
 
     toast.info("👋 Logged out successfully. See you soon! 💨", {
       theme: "colored",
+      position: "bottom-left",
     });
 
     setTimeout(() => {
@@ -66,319 +67,326 @@ const Header = () => {
   };
 
   return (
-    <header className="main-header d-flex align-items-center">
+    <>
       <ToastContainer position="bottom-left" autoClose={3000} />
-      <div className="container-fluid w-100">
-        <div className="row d-flex align-items-center w-100">
-          <div className="col-md-3 part1">
-            <Link to={"/"} className="d-flex align-items-center logo flex-row">
-              <img src={logo1} alt="" className="logo-img" />
-              <span className="ml-2">Dashboard</span>
-            </Link>
-          </div>
-          {context.windowWidth > 992 && (
-            <div className="col-md-4 d-flex align-items-center part2 res-hide">
-              <Button
-                className="rounded-circle"
-                onClick={() => context.setisSidebar(!context.isSidebar)}
+      <header className="main-header d-flex align-items-center">
+        <div className="container-fluid w-100">
+          <div className="row d-flex align-items-center w-100">
+            <div className="col-md-3 part1">
+              <Link
+                to={"/"}
+                className="d-flex align-items-center logo flex-row"
               >
-                {context.isSidebar === false ? (
-                  <MdMenuOpen />
-                ) : (
-                  <MdOutlineMenu />
-                )}
-              </Button>
-              <Search />
-            </div>
-          )}
-
-          <div className="col-md-5 d-flex align-items-center justify-content-end part3">
-            <Button
-              className="rounded-circle mr-1"
-              onClick={() => context.setThemeMode(!context.themeMode)}
-            >
-              <MdLightMode />
-            </Button>
-            <Button className="rounded-circle mr-1">
-              <IoMdCart />
-            </Button>
-            <Button className="rounded-circle mr-1">
-              <MdEmail />
-            </Button>
-            <Button
-              className="rounded-circle mr-2"
-              onClick={handleOpenNotifyMenu}
-            >
-              <FaBell />
-            </Button>
-
-            <Button
-              className="rounded-circle mr-2"
-              onClick={() => {
-                context.openNav();
-              }}
-            >
-              <IoMenu />
-            </Button>
-
-            <Menu
-              anchorEl={notifyAnchorEl}
-              className="notifications dropdown_list"
-              open={openNotifyMenu}
-              onClose={handleCloseNotifyMenu}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              PaperProps={{
-                style: {
-                  marginTop: "15px",
-                  marginLeft: "8px",
-                  minWidth: "270px",
-                  maxHeight: "390px",
-                  overflow: "hidden",
-                },
-              }}
-            >
-              <div
-                className="notification-header"
-                style={{
-                  position: "sticky",
-                  top: 0,
-                  backgroundColor: "white",
-                  zIndex: 1,
-                  padding: "7 px",
-                }}
-              >
-                <h5>Notifications (34)</h5>
-              </div>
-              <Divider style={{ backgroundColor: "black", height: "1px" }} />
-              <div
-                className="notification-content"
-                style={{
-                  maxHeight: "320px",
-                  overflowY: "auto",
-                }}
-              >
-                {/* Notification Items */}
-                <MenuItem onClick={handleCloseNotifyMenu}>
-                  <div className="d-flex align-items-center">
-                    <UserAvatar img={"logo2"} />
-
-                    <div
-                      className="dropdownInfo ml-1"
-                      style={{ marginLeft: "8px" }}
-                    >
-                      <h6>
-                        <span>
-                          <b>Dasun</b> added to his favourite List{" "}
-                          <b>Classic Margherita Pizza.</b>
-                        </span>
-                      </h6>
-                      <p className="text-skt mb-0 ml-2">few seconds ago</p>
-                    </div>
-                  </div>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNotifyMenu}>
-                  <div className="d-flex align-items-center">
-                    <div className="userImg">
-                      <span className="rounded-circle">
-                        <img
-                          src={logo2}
-                          alt=""
-                          style={{ height: "37px", width: "37px" }}
-                        />
-                      </span>
-                    </div>
-                    <div
-                      className="dropdownInfo ml-1"
-                      style={{ marginLeft: "8px" }}
-                    >
-                      <h6>
-                        <span>
-                          <b>Dasun</b> added to his favourite List{" "}
-                          <b>Classic Margherita Pizza.</b>
-                        </span>
-                      </h6>
-                      <p className="text-skt mb-0 ml-2">few seconds ago</p>
-                    </div>
-                  </div>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNotifyMenu}>
-                  <div className="d-flex align-items-center">
-                    <div className="userImg">
-                      <span className="rounded-circle">
-                        <img
-                          src={logo2}
-                          alt=""
-                          style={{ height: "37px", width: "37px" }}
-                        />
-                      </span>
-                    </div>
-                    <div
-                      className="dropdownInfo ml-1"
-                      style={{ marginLeft: "8px" }}
-                    >
-                      <h6>
-                        <span>
-                          <b>Dasun</b> added to his favourite List{" "}
-                          <b>Classic Margherita Pizza.</b>
-                        </span>
-                      </h6>
-                      <p className="text-skt mb-0 ml-2">few seconds ago</p>
-                    </div>
-                  </div>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNotifyMenu}>
-                  <div className="d-flex align-items-center">
-                    <div className="userImg">
-                      <span className="rounded-circle">
-                        <img
-                          src={logo2}
-                          alt=""
-                          style={{ height: "37px", width: "37px" }}
-                        />
-                      </span>
-                    </div>
-                    <div
-                      className="dropdownInfo ml-1"
-                      style={{ marginLeft: "8px" }}
-                    >
-                      <h6>
-                        <span>
-                          <b>Dasun</b> added to his favourite List{" "}
-                          <b>Classic Margherita Pizza.</b>
-                        </span>
-                      </h6>
-                      <p className="text-skt mb-0 ml-2">few seconds ago</p>
-                    </div>
-                  </div>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNotifyMenu}>
-                  <div className="d-flex align-items-center">
-                    <div className="userImg">
-                      <span className="rounded-circle">
-                        <img
-                          src={logo2}
-                          alt=""
-                          style={{ height: "37px", width: "37px" }}
-                        />
-                      </span>
-                    </div>
-                    <div
-                      className="dropdownInfo ml-1"
-                      style={{ marginLeft: "8px" }}
-                    >
-                      <h6>
-                        <span>
-                          <b>Dasun</b> added to his favourite List{" "}
-                          <b>Classic Margherita Pizza.</b>
-                        </span>
-                      </h6>
-                      <p className="text-skt mb-0 ml-2">few seconds ago</p>
-                    </div>
-                  </div>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNotifyMenu}>
-                  <div className="d-flex align-items-center">
-                    <div className="userImg">
-                      <span className="rounded-circle">
-                        <img
-                          src={logo2}
-                          alt=""
-                          style={{ height: "37px", width: "37px" }}
-                        />
-                      </span>
-                    </div>
-                    <div
-                      className="dropdownInfo ml-1"
-                      style={{ marginLeft: "8px" }}
-                    >
-                      <h6>
-                        <span>
-                          <b>Dasun</b> added to his favourite List{" "}
-                          <b>Classic Margherita Pizza.</b>
-                        </span>
-                      </h6>
-                      <p className="text-skt mb-0 ml-2">few seconds ago</p>
-                    </div>
-                  </div>
-                </MenuItem>
-                {/* Add more MenuItems as needed */}
-              </div>
-              <Button
-                className="btn-blue w-100 pt-2 pb-2"
-                onClick={handleViewAllNotifications}
-                style={{
-                  position: "sticky",
-                  bottom: 0,
-                  backgroundColor: "white",
-                  zIndex: 1,
-                  textTransform: "capitalize",
-                  borderRadius: "5px",
-                }}
-              >
-                View all notifications
-              </Button>
-            </Menu>
-            {context.isLogin !== true ? (
-              <Link to={"/login"}>
-                {" "}
-                <Button className="btn-blue btn-lg btn-round ">Sign In</Button>
+                <img src={logo1} alt="" className="logo-img" />
+                <span className="ml-2">Dashboard</span>
               </Link>
-            ) : (
-              <div className="myAccWrapper">
+            </div>
+            {context.windowWidth > 992 && (
+              <div className="col-md-4 d-flex align-items-center part2 res-hide">
                 <Button
-                  className="myAcc d-flex align-items-center"
-                  onClick={handleOpenAccountMenu}
+                  className="rounded-circle"
+                  onClick={() => context.setisSidebar(!context.isSidebar)}
                 >
-                  <div className="userImg">
-                    <span className="rounded-circle">
-                      {context.user?.name?.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="userInfo res-hide">
-                    <h6>{context.user?.name} </h6>
-                    <p className="mb-0">{context.user?.email}</p>
-                  </div>
+                  {context.isSidebar === false ? (
+                    <MdMenuOpen />
+                  ) : (
+                    <MdOutlineMenu />
+                  )}
                 </Button>
+                <Search />
               </div>
             )}
 
-            <Menu
-              anchorEl={accountAnchorEl}
-              open={openAccountMenu}
-              onClose={handleCloseAccountMenu}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              PaperProps={{
-                style: {
-                  marginTop: "10px",
-                  marginLeft: "5px",
-                },
-              }}
-            >
-              <MenuItem onClick={handleCloseAccountMenu}>
-                <ListItemIcon>
-                  <PersonAdd fontSize="small" />
-                </ListItemIcon>
-                My Account
-              </MenuItem>
-              <MenuItem onClick={handleCloseAccountMenu}>
-                <ListItemIcon>
-                  <FaShieldAlt />
-                </ListItemIcon>
-                Reset Password
-              </MenuItem>
-              <MenuItem onClick={logout}>
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Logout
-              </MenuItem>
-            </Menu>
+            <div className="col-md-5 d-flex align-items-center justify-content-end part3">
+              <Button
+                className="rounded-circle mr-1"
+                onClick={() => context.setThemeMode(!context.themeMode)}
+              >
+                <MdLightMode />
+              </Button>
+              <Button className="rounded-circle mr-1">
+                <IoMdCart />
+              </Button>
+              <Button className="rounded-circle mr-1">
+                <MdEmail />
+              </Button>
+              <Button
+                className="rounded-circle mr-2"
+                onClick={handleOpenNotifyMenu}
+              >
+                <FaBell />
+              </Button>
+
+              <Button
+                className="rounded-circle mr-2"
+                onClick={() => {
+                  context.openNav();
+                }}
+              >
+                <IoMenu />
+              </Button>
+
+              <Menu
+                anchorEl={notifyAnchorEl}
+                className="notifications dropdown_list"
+                open={openNotifyMenu}
+                onClose={handleCloseNotifyMenu}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                PaperProps={{
+                  style: {
+                    marginTop: "15px",
+                    marginLeft: "8px",
+                    minWidth: "270px",
+                    maxHeight: "390px",
+                    overflow: "hidden",
+                  },
+                }}
+              >
+                <div
+                  className="notification-header"
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "white",
+                    zIndex: 1,
+                    padding: "7 px",
+                  }}
+                >
+                  <h5>Notifications (34)</h5>
+                </div>
+                <Divider style={{ backgroundColor: "black", height: "1px" }} />
+                <div
+                  className="notification-content"
+                  style={{
+                    maxHeight: "320px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {/* Notification Items */}
+                  <MenuItem onClick={handleCloseNotifyMenu}>
+                    <div className="d-flex align-items-center">
+                      <UserAvatar img={"logo2"} />
+
+                      <div
+                        className="dropdownInfo ml-1"
+                        style={{ marginLeft: "8px" }}
+                      >
+                        <h6>
+                          <span>
+                            <b>Dasun</b> added to his favourite List{" "}
+                            <b>Classic Margherita Pizza.</b>
+                          </span>
+                        </h6>
+                        <p className="text-skt mb-0 ml-2">few seconds ago</p>
+                      </div>
+                    </div>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNotifyMenu}>
+                    <div className="d-flex align-items-center">
+                      <div className="userImg">
+                        <span className="rounded-circle">
+                          <img
+                            src={logo2}
+                            alt=""
+                            style={{ height: "37px", width: "37px" }}
+                          />
+                        </span>
+                      </div>
+                      <div
+                        className="dropdownInfo ml-1"
+                        style={{ marginLeft: "8px" }}
+                      >
+                        <h6>
+                          <span>
+                            <b>Dasun</b> added to his favourite List{" "}
+                            <b>Classic Margherita Pizza.</b>
+                          </span>
+                        </h6>
+                        <p className="text-skt mb-0 ml-2">few seconds ago</p>
+                      </div>
+                    </div>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNotifyMenu}>
+                    <div className="d-flex align-items-center">
+                      <div className="userImg">
+                        <span className="rounded-circle">
+                          <img
+                            src={logo2}
+                            alt=""
+                            style={{ height: "37px", width: "37px" }}
+                          />
+                        </span>
+                      </div>
+                      <div
+                        className="dropdownInfo ml-1"
+                        style={{ marginLeft: "8px" }}
+                      >
+                        <h6>
+                          <span>
+                            <b>Dasun</b> added to his favourite List{" "}
+                            <b>Classic Margherita Pizza.</b>
+                          </span>
+                        </h6>
+                        <p className="text-skt mb-0 ml-2">few seconds ago</p>
+                      </div>
+                    </div>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNotifyMenu}>
+                    <div className="d-flex align-items-center">
+                      <div className="userImg">
+                        <span className="rounded-circle">
+                          <img
+                            src={logo2}
+                            alt=""
+                            style={{ height: "37px", width: "37px" }}
+                          />
+                        </span>
+                      </div>
+                      <div
+                        className="dropdownInfo ml-1"
+                        style={{ marginLeft: "8px" }}
+                      >
+                        <h6>
+                          <span>
+                            <b>Dasun</b> added to his favourite List{" "}
+                            <b>Classic Margherita Pizza.</b>
+                          </span>
+                        </h6>
+                        <p className="text-skt mb-0 ml-2">few seconds ago</p>
+                      </div>
+                    </div>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNotifyMenu}>
+                    <div className="d-flex align-items-center">
+                      <div className="userImg">
+                        <span className="rounded-circle">
+                          <img
+                            src={logo2}
+                            alt=""
+                            style={{ height: "37px", width: "37px" }}
+                          />
+                        </span>
+                      </div>
+                      <div
+                        className="dropdownInfo ml-1"
+                        style={{ marginLeft: "8px" }}
+                      >
+                        <h6>
+                          <span>
+                            <b>Dasun</b> added to his favourite List{" "}
+                            <b>Classic Margherita Pizza.</b>
+                          </span>
+                        </h6>
+                        <p className="text-skt mb-0 ml-2">few seconds ago</p>
+                      </div>
+                    </div>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNotifyMenu}>
+                    <div className="d-flex align-items-center">
+                      <div className="userImg">
+                        <span className="rounded-circle">
+                          <img
+                            src={logo2}
+                            alt=""
+                            style={{ height: "37px", width: "37px" }}
+                          />
+                        </span>
+                      </div>
+                      <div
+                        className="dropdownInfo ml-1"
+                        style={{ marginLeft: "8px" }}
+                      >
+                        <h6>
+                          <span>
+                            <b>Dasun</b> added to his favourite List{" "}
+                            <b>Classic Margherita Pizza.</b>
+                          </span>
+                        </h6>
+                        <p className="text-skt mb-0 ml-2">few seconds ago</p>
+                      </div>
+                    </div>
+                  </MenuItem>
+                  {/* Add more MenuItems as needed */}
+                </div>
+                <Button
+                  className="btn-blue w-100 pt-2 pb-2"
+                  onClick={handleViewAllNotifications}
+                  style={{
+                    position: "sticky",
+                    bottom: 0,
+                    backgroundColor: "white",
+                    zIndex: 1,
+                    textTransform: "capitalize",
+                    borderRadius: "5px",
+                  }}
+                >
+                  View all notifications
+                </Button>
+              </Menu>
+              {context.isLogin !== true ? (
+                <Link to={"/login"}>
+                  {" "}
+                  <Button className="btn-blue btn-lg btn-round ">
+                    Sign In
+                  </Button>
+                </Link>
+              ) : (
+                <div className="myAccWrapper">
+                  <Button
+                    className="myAcc d-flex align-items-center"
+                    onClick={handleOpenAccountMenu}
+                  >
+                    <div className="userImg">
+                      <span className="rounded-circle">
+                        {context.user?.name?.charAt(0)}
+                      </span>
+                    </div>
+                    <div className="userInfo res-hide">
+                      <h6>{context.user?.name} </h6>
+                      <p className="mb-0">{context.user?.email}</p>
+                    </div>
+                  </Button>
+                </div>
+              )}
+
+              <Menu
+                anchorEl={accountAnchorEl}
+                open={openAccountMenu}
+                onClose={handleCloseAccountMenu}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                PaperProps={{
+                  style: {
+                    marginTop: "10px",
+                    marginLeft: "5px",
+                  },
+                }}
+              >
+                <MenuItem onClick={handleCloseAccountMenu}>
+                  <ListItemIcon>
+                    <PersonAdd fontSize="small" />
+                  </ListItemIcon>
+                  My Account
+                </MenuItem>
+                <MenuItem onClick={handleCloseAccountMenu}>
+                  <ListItemIcon>
+                    <FaShieldAlt />
+                  </ListItemIcon>
+                  Reset Password
+                </MenuItem>
+                <MenuItem onClick={logout}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
+              </Menu>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 };
 

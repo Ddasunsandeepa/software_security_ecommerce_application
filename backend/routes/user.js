@@ -8,8 +8,11 @@ router.post(`/signup`, async (req, res) => {
   const { name, phone, email, password } = req.body;
   try {
     const existingUser = await User.findOne({ email: email });
-    if (existingUser) {
-      res.status(400).json({ msg: "user already exist!" });
+    const existingPhone = await User.findOne({ phone: phone });
+    if (existingUser && existingPhone) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "user already exist!" });
     }
     const hashPassword = await bcrypt.hash(password, 10);
     const result = await User.create({
@@ -28,7 +31,7 @@ router.post(`/signup`, async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ msg: "something went wrong" });
+    res.status(500).json({ status: false, msg: "something went wrong" });
   }
 });
 
