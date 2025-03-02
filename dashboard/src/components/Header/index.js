@@ -19,6 +19,8 @@ import Divider from "@mui/material/Divider";
 import { Mycontext } from "../../App";
 import UserAvatar from "../UserAvatar";
 import { IoMenu } from "react-icons/io5";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Header = () => {
   // const [isLogin, setIsLogin] = useState(false);
@@ -49,9 +51,23 @@ const Header = () => {
     handleCloseNotifyMenu();
     navigate("/notifications");
   };
+  const logout = () => {
+    localStorage.clear();
+    setAccountAnchorEl(null);
+    context.setAlertBox({}); // Assuming this is used for alerts
+
+    toast.info("👋 Logged out successfully. See you soon! 💨", {
+      theme: "colored",
+    });
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 2000);
+  };
 
   return (
     <header className="main-header d-flex align-items-center">
+      <ToastContainer position="bottom-left" autoClose={3000} />
       <div className="container-fluid w-100">
         <div className="row d-flex align-items-center w-100">
           <div className="col-md-3 part1">
@@ -96,7 +112,12 @@ const Header = () => {
               <FaBell />
             </Button>
 
-            <Button className="rounded-circle mr-2" onClick={()=>{context.openNav()}}>
+            <Button
+              className="rounded-circle mr-2"
+              onClick={() => {
+                context.openNav();
+              }}
+            >
               <IoMenu />
             </Button>
 
@@ -311,16 +332,12 @@ const Header = () => {
                 >
                   <div className="userImg">
                     <span className="rounded-circle">
-                      <img
-                        src={logo2}
-                        alt=""
-                        style={{ height: "37px", width: "37px" }}
-                      />
+                      {context.user?.name?.charAt(0)}
                     </span>
                   </div>
                   <div className="userInfo res-hide">
-                    <h6>Dasun </h6>
-                    <p className="mb-0">@_Dasun</p>
+                    <h6>{context.user?.name} </h6>
+                    <p className="mb-0">{context.user?.email}</p>
                   </div>
                 </Button>
               </div>
@@ -351,7 +368,7 @@ const Header = () => {
                 </ListItemIcon>
                 Reset Password
               </MenuItem>
-              <MenuItem onClick={handleCloseAccountMenu}>
+              <MenuItem onClick={logout}>
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>

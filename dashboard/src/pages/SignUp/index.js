@@ -14,6 +14,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import AnimatedText from "./AnimatedText";
 import { IoHome } from "react-icons/io5";
+import { postData } from "../../utils/Api";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -32,7 +36,7 @@ const SignUp = () => {
     context.setisHideSidebarAndHeader(true);
     window.scrollTo(0, 0);
   }, []);
-
+  const history = useNavigate();
   const focusInput = (index) => {
     setInputIndex(index);
   };
@@ -42,12 +46,111 @@ const SignUp = () => {
       [e.target.name]: e.target.value,
     }));
   };
+  // const signUp = (e) => {
+  //   e.preventDefault();
+  //   if (formFields.name === "") {
+  //     context.setAlertBox({
+  //       open: true,
+  //       error: true,
+  //       msg: "Name Can Not Be Blank!...",
+  //     });
+  //     return false;
+  //   }
+  //   if (formFields.email === "") {
+  //     context.setAlertBox({
+  //       open: true,
+  //       error: true,
+  //       msg: "Email Can Not Be Blank!...",
+  //     });
+  //     return false;
+  //   }
+  //   if (formFields.phone === "") {
+  //     context.setAlertBox({
+  //       open: true,
+  //       error: true,
+  //       msg: "Phone Can Not Be Blank!...",
+  //     });
+  //     return false;
+  //   }
+  //   if (formFields.password === "") {
+  //     context.setAlertBox({
+  //       open: true,
+  //       error: true,
+  //       msg: "Password Can Not Be Blank!...",
+  //     });
+  //     return false;
+  //   }
+  //   if (formFields.confirmPassword === "") {
+  //     context.setAlertBox({
+  //       open: true,
+  //       error: true,
+  //       msg: "Confirm Password Can Not Be Blank!...",
+  //     });
+  //     return false;
+  //   }
+  //   if (formFields.confirmPassword !== formFields.password) {
+  //     context.setAlertBox({
+  //       open: true,
+  //       error: true,
+  //       msg: "Passowrd Not Match!...",
+  //     });
+  //     return false;
+  //   }
+  //   postData("/api/user/signup", formFields).then((res) => {
+  //     console.log(res);
+  //   });
+  // };
   const signUp = (e) => {
     e.preventDefault();
-    console.log(formFields);
+
+    try {
+      if (formFields.name === "") {
+        toast.error("🚨 Name cannot be blank!", { theme: "colored" });
+        return false;
+      }
+      if (formFields.email === "") {
+        toast.error("📧 Email cannot be blank!", { theme: "colored" });
+        return false;
+      }
+      if (formFields.phone === "") {
+        toast.error("📱 Phone number is required!", { theme: "colored" });
+        return false;
+      }
+      if (formFields.password === "") {
+        toast.error("🔒 Password cannot be blank!", { theme: "colored" });
+        return false;
+      }
+      if (formFields.confirmPassword === "") {
+        toast.error("🔁 Confirm Password is required!", { theme: "colored" });
+        return false;
+      }
+      if (formFields.confirmPassword !== formFields.password) {
+        toast.error("❌ Passwords do not match!", { theme: "colored" });
+        return false;
+      }
+      postData("/api/user/signup", formFields).then((res) => {
+        if (res) {
+          toast.success("✅ Account created successfully!", {
+            theme: "colored",
+          });
+        } else {
+          toast.error("⚠️ Something went wrong! Try again.", {
+            theme: "colored",
+          });
+        }
+        setTimeout(() => {
+          history("/login");
+        }, 2000);
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <>
+      <ToastContainer position="bottom-left" autoClose={3000} />
+
       <img
         src="https://dashboard-ecommerce-react.netlify.app/static/media/pattern.df9a7a28fc13484d1013.webp"
         alt=""

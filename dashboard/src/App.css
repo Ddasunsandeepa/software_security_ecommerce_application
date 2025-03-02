@@ -117,6 +117,8 @@ body.dark .search svg {
   text-align: left !important;
   color: #282323 !important;
   text-transform: capitalize !important;
+  color: #fffdfd !important;
+  font-size: 22px;
 }
 /* .myAcc button {
   margin-right: 16px;
@@ -152,6 +154,9 @@ body.dark .search svg {
   height: 100%;
   cursor: pointer;
   position: relative;
+  background-color: #032d80 !important;
+  color: #fffdfd !important;
+  font-size: 22px;
 }
 
 .userImg .rounded-circle {

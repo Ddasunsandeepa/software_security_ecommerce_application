@@ -14,6 +14,7 @@ import ProductUpload from "./pages/ProductUpload";
 import CategoryAdd from "./pages/CategoryAdd";
 import CategoryList from "./pages/CategoryList";
 import LoadingBar from "react-top-loading-bar";
+import { Email } from "@mui/icons-material";
 
 const Mycontext = createContext();
 
@@ -29,7 +30,16 @@ function App() {
   const [isOpenNav, setIsOpenNav] = useState(false);
   const [progress, setProgress] = useState(0);
   const [baseUrl, setBaseurl] = useState("http://localhost:4000");
-
+  const [alertBox, setAlertBox] = useState({
+    msg: "",
+    error: "fasle",
+    open: false,
+  });
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    userId: "",
+  });
   useEffect(() => {
     if (themeMode === true) {
       document.body.classList.remove("dark");
@@ -54,6 +64,18 @@ function App() {
   const openNav = () => {
     setIsOpenNav(true);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token !== "" && token !== undefined && token !== null) {
+      setIsLogin(true);
+      const userData = JSON.parse(localStorage.getItem("user"));
+      setUser(userData);
+    } else {
+      setIsLogin(false);
+    }
+  }, [isLogin]);
+
   const values = {
     isLogin,
     setIsLogin,
@@ -70,6 +92,10 @@ function App() {
     progress,
     setProgress,
     baseUrl,
+    alertBox,
+    setAlertBox,
+    setUser,
+    user,
   };
 
   return (
