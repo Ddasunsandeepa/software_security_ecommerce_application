@@ -76,7 +76,8 @@ const SignUp = () => {
             });
             setLoading(false);
             setTimeout(() => {
-              history("/SignIn");
+              // history("/SignIn");
+              window.location.href("/SignIn");
             }, 2000);
           } else {
             // ❌ General error
@@ -143,7 +144,6 @@ const SignUp = () => {
                       label="Name"
                       variant="standard"
                       type="text"
-                      required
                       className="w-100"
                       name="name"
                       onChange={onchangeInput}
@@ -156,7 +156,6 @@ const SignUp = () => {
                       label="Contact No."
                       variant="standard"
                       type="text"
-                      required
                       className="w-100"
                       name="phone"
                       onChange={onchangeInput}
@@ -172,7 +171,6 @@ const SignUp = () => {
                       label="Email"
                       variant="standard"
                       type="email"
-                      required
                       className="w-100"
                       name="email"
                       onChange={onchangeInput}
@@ -186,7 +184,6 @@ const SignUp = () => {
                       label="Password"
                       variant="standard"
                       type="password"
-                      required
                       className="w-100"
                       name="password"
                       onChange={onchangeInput}
