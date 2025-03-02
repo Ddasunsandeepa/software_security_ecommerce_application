@@ -21,7 +21,7 @@ const CountryDropdown = () => {
   const selectCity = (index, city) => {
     setSelectedTab(index);
     setisOpenModal(false);
-    context.setSelectCity(city);
+    context.setSelectCity(city.name); // Pass only the city's name, not the whole object
   };
 
   useEffect(() => {
@@ -32,9 +32,9 @@ const CountryDropdown = () => {
     const keyWord = e.target.value.toLowerCase();
 
     if (keyWord) {
-      // Filter cities based on the keyword
+      // Filter cities based on the 'name' field
       const list = context.countrList.filter((item) => {
-        return item.toLowerCase().includes(keyWord);
+        return item.name.toLowerCase().includes(keyWord); // Check against city name
       });
       setCityList(list);
     } else {
@@ -50,7 +50,7 @@ const CountryDropdown = () => {
           <span className="name">
             {context.selectCity !== ""
               ? context.selectCity.length > 15
-                ? context.selectCity?.substr(0, 15)+"..."
+                ? context.selectCity.substr(0, 15) + "..."
                 : context.selectCity
               : "Select City"}
           </span>
@@ -91,7 +91,7 @@ const CountryDropdown = () => {
                   onClick={() => selectCity(index, city)}
                   className={`${selectedTab === index ? "active" : ""}`}
                 >
-                  {city}
+                  {city.name} {/* Display the city's name here */}
                 </Button>
               </li>
             ))

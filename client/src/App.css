@@ -2124,3 +2124,8 @@ a:hover {
   width: 100%;
   text-align: center;
 }
+/* Add this CSS to your styles */
+.countryList button {
+  font-size: 19px; /* Change this value to your preferred font size */
+  padding: 10px; /* You can also adjust padding if needed */
+}

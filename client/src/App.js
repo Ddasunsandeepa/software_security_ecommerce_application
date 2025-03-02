@@ -17,7 +17,6 @@ import { fetchDataFromApi } from "./utils/Api";
 import { NoProductsFound } from "./Components/motionProduct";
 import BlogPage from "./Pages/blog/blog";
 
-
 const Mycontext = createContext();
 
 function App() {
@@ -32,9 +31,9 @@ function App() {
   const [productData, setProductData] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
 
-  useEffect(() => {
-    getCountry("https://countriesnow.space/api/v0.1/countries");
-  }, []);
+  // useEffect(() => {
+  //   getCountry("https://countriesnow.space/api/v0.1/countries");
+  // }, []);
 
   useEffect(() => {
     const catArr = [];
@@ -56,10 +55,41 @@ function App() {
         });
   }, [isOpenProductModel]);
 
-  const getCountry = async (url) => {
-    const response = await axios.get(url);
-    setCountrList(response.data.data[196].cities);
+  // const getCountry = async (url) => {
+  //   const response = await axios.get(url);
+  //   console.log(response);
+  //   setCountrList(response.data.data[196].cities);
+  // };
+  const getCountry = () => {
+    // Define your custom list of cities
+    const cities = [
+      { name: "Colombo", country: "Sri Lanka" },
+      { name: "Kandy", country: "Sri Lanka" },
+      { name: "Galle", country: "Sri Lanka" },
+      { name: "Negombo", country: "Sri Lanka" },
+      { name: "Jaffna", country: "Sri Lanka" },
+      { name: "Matara", country: "Sri Lanka" },
+      { name: "Trincomalee", country: "Sri Lanka" },
+      { name: "Batticaloa", country: "Sri Lanka" },
+      { name: "Anuradhapura", country: "Sri Lanka" },
+      { name: "Nuwara Eliya", country: "Sri Lanka" },
+      { name: "Dambulla", country: "Sri Lanka" },
+      { name: "Vavuniya", country: "Sri Lanka" },
+      { name: "Ratnapura", country: "Sri Lanka" },
+      { name: "Kurunegala", country: "Sri Lanka" },
+      { name: "Mullaitivu", country: "Sri Lanka" },
+      { name: "Puttalam", country: "Sri Lanka" },
+      // Add more cities as needed
+    ];
+
+    // Set the list to the state
+    setCountrList(cities);
   };
+
+  // UseEffect to call the function when the component is mounted
+  useEffect(() => {
+    getCountry(); // Call the function that sets the cities
+  }, []);
 
   const closeProductModel = () => {
     setisOpenProductModel({ id: "", open: false });
