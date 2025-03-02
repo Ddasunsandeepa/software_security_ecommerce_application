@@ -41,6 +41,11 @@ function App() {
       setCategoryData(res.categoryList);
     });
   }, []);
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    userId: "",
+  });
 
   useEffect(() => {
     isOpenProductModel.open === true &&
@@ -94,6 +99,16 @@ function App() {
   const closeProductModel = () => {
     setisOpenProductModel({ id: "", open: false });
   };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token !== "" && token !== undefined && token !== null) {
+      setisLogin(true);
+      const userData = JSON.parse(localStorage.getItem("user"));
+      setUser(userData);
+    } else {
+      setisLogin(false);
+    }
+  }, [isLogin]);
 
   const values = {
     countrList,
@@ -107,6 +122,8 @@ function App() {
     setisLogin,
     categoryData,
     setCategoryData,
+    user,
+    setUser,
   };
 
   return (

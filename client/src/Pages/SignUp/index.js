@@ -76,8 +76,8 @@ const SignUp = () => {
             });
             setLoading(false);
             setTimeout(() => {
-              // history("/SignIn");
-              window.location.href("/SignIn");
+              history("/SignIn");
+              // window.location.href("/SignIn");
             }, 2000);
           } else {
             // ❌ General error
