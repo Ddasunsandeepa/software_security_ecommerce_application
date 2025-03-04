@@ -117,7 +117,7 @@ const Cart = () => {
                         return (
                           <tr>
                             <td>
-                              <Link to="/product/${productId}">
+                              <Link to={`/product/${item?.productId}`}>
                                 <div className="d-flex align-items-center cartItemImgWrapper">
                                   <div className="imgWrapper">
                                     <img
