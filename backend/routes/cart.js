@@ -89,6 +89,7 @@ router.put("/:id", async (req, res) => {
         subTotal: req.body.subTotal,
         productId: req.body.productId,
         userId: req.body.userId,
+        size: req.body.size,
       },
       { new: true }
     );
