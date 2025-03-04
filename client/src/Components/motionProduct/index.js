@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Box } from "@mui/material";
-import { SearchOff } from "@mui/icons-material"; // Nice icon for "no results"
+import { SearchOff } from "@mui/icons-material"; 
 
 const NoProductsFound = () => {
   return (
