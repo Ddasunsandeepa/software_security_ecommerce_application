@@ -7,6 +7,8 @@ import { Mycontext } from "../../App";
 import { fetchDataFromApi } from "../../utils/Api";
 
 const Cart = () => {
+  const [activeSize, setActiveSize] = useState(null);
+  const [cartFields, setCartFields] = useState({});
   const [cartData, setCartData] = useState([]);
   const context = useContext(Mycontext);
   useEffect(() => {
@@ -17,7 +19,7 @@ const Cart = () => {
   const updateQuantity = (productId, newQuantity) => {
     setCartData((prevCart) =>
       prevCart.map((item) =>
-        item.productId === productId
+        item._id === productId
           ? {
               ...item,
               quantity: newQuantity,
@@ -26,6 +28,29 @@ const Cart = () => {
           : item
       )
     );
+  };
+  const removeItem = (productId) => {
+    setCartData((prevCart) =>
+      prevCart.filter((item) => item._id !== productId)
+    );
+  };
+
+  const selectedItem = (item) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    cartFields.productTitle = item?.name;
+    cartFields.images = item?.images[0];
+    cartFields.rating = item?.rating;
+    cartFields.price = item?.price;
+    cartFields.quantity = item?.quantity;
+    cartFields.subTotal = item?.currentPrice;
+    cartFields.productId = item?._id;
+    cartFields.userId = user?.id;
+    cartFields.size = item?.size;
+  };
+  const calculateSubtotal = () => {
+    return cartData
+      .reduce((total, item) => total + item.subTotal, 0)
+      .toFixed(2);
   };
 
   return (
@@ -70,7 +95,7 @@ const Cart = () => {
                                   style={{ color: "#722222" }}
                                 >
                                   <h6 className="product-name">
-                                    {item.productTitle}
+                                    {item?.productTitle?.substr(0, 25) + "..."}
                                   </h6>
                                   <h6 className="product-name">
                                     ({item.size})
@@ -91,14 +116,17 @@ const Cart = () => {
                             <QuantityBox
                               inputVal={item.quantity}
                               setInputVal={(newQty) =>
-                                updateQuantity(item.productId, newQty)
+                                updateQuantity(item._id, newQty)
                               }
-                              productId={item.productId}
+                              productId={item._id}
                             />
                           </td>
                           <td>${item.subTotal}</td>
                           <td d-flex align-items-inline>
-                            <button className="btn btn-danger btn-sm">
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() => removeItem(item._id)}
+                            >
                               <MdDelete /> &nbsp;Remove
                             </button>
                           </td>
@@ -115,7 +143,9 @@ const Cart = () => {
 
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <span>SubTotal</span>
-                <span className="amount text-success">$12.31</span>
+                <span className="amount text-success">
+                  ${calculateSubtotal()}
+                </span>
               </div>
 
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -131,7 +161,7 @@ const Cart = () => {
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <span>Total</span>
                 <span className="amount text-danger font-weight-bold">
-                  $12.31
+                  ${calculateSubtotal()}
                 </span>
               </div>
 
