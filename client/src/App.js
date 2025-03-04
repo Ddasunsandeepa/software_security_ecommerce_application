@@ -33,6 +33,7 @@ function App() {
   const [productData, setProductData] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
   const [cartData, setCartData] = useState([]);
+  const [addingCart, setaddingCart] = useState(false);
 
   useEffect(() => {
     getCountry("https://countriesnow.space/api/v0.1/countries");
@@ -116,6 +117,7 @@ function App() {
   }, [isLogin]);
 
   const addtoCart = (data) => {
+    setaddingCart(true);
     console.log(data);
     postData(`/api/cart/add`, data).then((res) => {
       console.log("Server Response:", res);
@@ -138,6 +140,9 @@ function App() {
           },
           icon: "✅",
         });
+        // setTimeout(() => {
+        //   setaddingCart(false);
+        // }, 1000);
       } else {
         toast.error("❌ Failed to add item to cart!", {
           position: "bottom-right",
@@ -177,7 +182,8 @@ function App() {
     setUser,
     addtoCart,
     cartData,
-    setCartData,
+    addingCart,
+    setaddingCart,
   };
 
   return (

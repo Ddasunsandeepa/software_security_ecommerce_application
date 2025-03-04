@@ -80,34 +80,34 @@ const ProductModel = (props) => {
       setCurrentPrice(newPrice * newQuantity);
     }
   };
-  const handleAddToCart = () => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItemIndex = cart.findIndex(
-      (item) =>
-        item.id === props?.data?._id &&
-        item.size === props?.data?.size[activeSize]
-    );
+  // const handleAddToCart = () => {
+  //   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  //   const existingItemIndex = cart.findIndex(
+  //     (item) =>
+  //       item.id === props?.data?._id &&
+  //       item.size === props?.data?.size[activeSize]
+  //   );
 
-    if (existingItemIndex !== -1) {
-      // If item exists, update its quantity and total price
-      cart[existingItemIndex].quantity += quantity;
-      cart[existingItemIndex].totalPrice =
-        cart[existingItemIndex].quantity * sizePrice;
-    } else {
-      // Add new item
-      cart.push({
-        id: props?.data?._id,
-        name: props?.data?.name,
-        size: props?.data?.size[activeSize],
-        price: sizePrice,
-        totalPrice: currentPrice,
-        quantity,
-        image: props?.data?.images[0],
-      });
-    }
+  //   if (existingItemIndex !== -1) {
+  //     // If item exists, update its quantity and total price
+  //     cart[existingItemIndex].quantity += quantity;
+  //     cart[existingItemIndex].totalPrice =
+  //       cart[existingItemIndex].quantity * sizePrice;
+  //   } else {
+  //     // Add new item
+  //     cart.push({
+  //       id: props?.data?._id,
+  //       name: props?.data?.name,
+  //       size: props?.data?.size[activeSize],
+  //       price: sizePrice,
+  //       totalPrice: currentPrice,
+  //       quantity,
+  //       image: props?.data?.images[0],
+  //     });
+  //   }
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-  };
+  //   localStorage.setItem("cart", JSON.stringify(cart));
+  // };
   const addtoCart = (data) => {
     if (activeSize !== null) {
       const user = JSON.parse(localStorage.getItem("user"));
