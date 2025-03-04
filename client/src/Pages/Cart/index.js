@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import QuantityBox from "../../Components/QuantityDropDown";
 import { MdDelete } from "react-icons/md";
 
 const Cart = () => {
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartItems(storedCart);
+  }, []);
+  const updateQuantity = (index, newQuantity) => {
+    const updatedCart = [...cartItems];
+    updatedCart[index].quantity = newQuantity;
+    updatedCart[index].totalPrice = updatedCart[index].price * newQuantity;
+    setCartItems(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  const removeItem = (index) => {
+    const updatedCart = cartItems.filter((_, i) => i !== index);
+    setCartItems(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
   return (
     <div className="section cartPage">
       <div className="container">
@@ -26,14 +46,14 @@ const Cart = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <Link to="/product/1">
+                  {cartItems.map((item, index) => (
+                    <tr key={index}>
+                      <td>
                         <div className="d-flex align-items-center cartItemImgWrapper">
                           <div className="imgWrapper">
                             <img
-                              src="https://adminsc.pizzahut.lk//images/mainmenu/4b3fdb42-f9f8-451a-ada9-e36a3c527cad.jpg"
-                              alt=""
+                              src={item.image}
+                              alt={item.name}
                               className="w-100"
                               style={{ height: "100px", width: "100px" }}
                             />
@@ -43,113 +63,31 @@ const Cart = () => {
                             style={{ color: "#722222" }}
                           >
                             <h6 className="product-name">
-                              Cheesy Onion with Green Chillies
+                              {item.name}({item.size})
                             </h6>
-                            <Rating
-                              name="read-only"
-                              value={4.5}
-                              readOnly
-                              precision={0.5}
-                              size="small"
-                            />
                           </div>
                         </div>
-                      </Link>
-                    </td>
-                    <td>$12.00</td>
-                    <td>
-                      <QuantityBox />
-                    </td>
-                    <td>$12.00</td>
-                    <td d-flex align-items-inline>
-                      <button className="btn btn-danger btn-sm">
-                        <MdDelete /> &nbsp;Remove
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <Link to="/product/1">
-                        <div className="d-flex align-items-center cartItemImgWrapper">
-                          <div className="imgWrapper">
-                            <img
-                              src="https://adminsc.pizzahut.lk//images/mainmenu/4b3fdb42-f9f8-451a-ada9-e36a3c527cad.jpg"
-                              alt=""
-                              className="w-100"
-                              style={{ height: "100px", width: "100px" }}
-                            />
-                          </div>
-                          <div
-                            className="info px-3"
-                            style={{ color: "#722222" }}
-                          >
-                            <h6 className="product-name">
-                              Cheesy Onion with Green Chillies
-                            </h6>
-                            <Rating
-                              name="read-only"
-                              value={4.5}
-                              readOnly
-                              precision={0.5}
-                              size="small"
-                            />
-                          </div>
-                        </div>
-                      </Link>
-                    </td>
-                    <td>$12.00</td>
-                    <td>
-                      <QuantityBox />
-                    </td>
-                    <td>$12.00</td>
-                    <td>
-                      <button className="btn btn-danger btn-sm">
-                        <MdDelete /> &nbsp;Remove
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <Link to="/product/1">
-                        <div className="d-flex align-items-center cartItemImgWrapper">
-                          <div className="imgWrapper">
-                            <img
-                              src="https://adminsc.pizzahut.lk//images/mainmenu/4b3fdb42-f9f8-451a-ada9-e36a3c527cad.jpg"
-                              alt=""
-                              className="w-100"
-                              style={{ height: "100px", width: "100px" }}
-                            />
-                          </div>
-                          <div
-                            className="info px-3"
-                            style={{ color: "#722222" }}
-                          >
-                            <h6 className="product-name">
-                              Cheesy Onion with Green Chillies
-                            </h6>
-                            <Rating
-                              name="read-only"
-                              value={4.5}
-                              readOnly
-                              precision={0.5}
-                              size="small"
-                            />
-                          </div>
-                        </div>
-                      </Link>
-                    </td>
-                    <td>$12.00</td>
-                    <td>
-                      <QuantityBox />
-                    </td>
-                    <td>$12.00</td>
-                    <td>
-                      <button className="btn btn-danger btn-sm">
-                        <MdDelete /> &nbsp;Remove
-                      </button>
-                    </td>
-                  </tr>
-                  {/* Repeat for other products */}
+                      </td>
+                      <td>${item.price}</td>
+                      <td>
+                        <QuantityBox
+                          inputVal={item.quantity}
+                          setInputVal={(newQty) =>
+                            updateQuantity(index, newQty)
+                          }
+                        />
+                      </td>
+                      <td>${item.totalPrice}</td>
+                      <td>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => removeItem(index)}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

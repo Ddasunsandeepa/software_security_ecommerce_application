@@ -29,6 +29,7 @@ router.get("/", async (req, res) => {
 
 // Add item to cart
 router.post("/add", async (req, res) => {
+  const Item = await Cart.findById(req.body.productId);
   try {
     let cartItem = new Cart({
       productTitle: req.body.productTitle,
@@ -39,11 +40,12 @@ router.post("/add", async (req, res) => {
       subTotal: req.body.subTotal,
       productId: req.body.productId,
       userId: req.body.userId,
+      size: req.body.size,
     });
-
     cartItem = await cartItem.save();
     res.status(201).json(cartItem);
   } catch (err) {
+    console.error("Cart Add Error:", err); // 🔥 Log error
     res.status(500).json({
       error: err.message,
       success: false,

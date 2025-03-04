@@ -10,8 +10,11 @@ import ProductZoom from "../ProductZoom";
 import { useContext, useEffect, useState } from "react";
 import { Mycontext } from "../../App";
 import { fetchDataFromApi } from "../../utils/Api";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductModel = (props) => {
+  const context = useContext(Mycontext);
   const [activeSize, setActiveSize] = useState(null); // Track selected size
   const [sizePrice, setSizePrice] = useState(props?.data?.price);
   const [catData, setCatData] = useState([]);
@@ -20,6 +23,8 @@ const ProductModel = (props) => {
   const [totalPrice, setTotalPrice] = useState(props?.data?.price);
   const [quantity, setQuantity] = useState(1);
   const [currentPrice, setCurrentPrice] = useState(0);
+  const [cartFields, setCartFields] = useState({});
+
   useEffect(() => {
     // Ensure props.data is available before accessing its properties
     if (props?.data) {
@@ -51,25 +56,97 @@ const ProductModel = (props) => {
   }, [inputVal, sizePrice, props?.data]);
 
   const sizePriceIncrements = [0, 4, 6, 12];
+  // const handleSizeChange = (index) => {
+  //   setActiveSize(index);
+  //   if (props?.data) {
+  //     setCurrentPrice(
+  //       (props.data.price + sizePriceIncrements[index]) * quantity
+  //     );
+  //   }
+  // };
   const handleSizeChange = (index) => {
     setActiveSize(index);
     if (props?.data) {
-      setCurrentPrice(
-        (props.data.price + sizePriceIncrements[index]) * quantity
-      );
+      const newPrice = props.data.price + sizePriceIncrements[index];
+      setSizePrice(newPrice); // Set new size-based price
+      setCurrentPrice(newPrice * quantity); // Update total price
     }
   };
 
   const handleQuantityChange = (newQuantity) => {
     setQuantity(newQuantity);
-    if (props?.data) {
-      setCurrentPrice(
-        (props.data.price + sizePriceIncrements[activeSize]) * newQuantity
-      );
+    if (props?.data && activeSize !== null) {
+      const newPrice = props.data.price + sizePriceIncrements[activeSize];
+      setCurrentPrice(newPrice * newQuantity);
     }
   };
+  const handleAddToCart = () => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingItemIndex = cart.findIndex(
+      (item) =>
+        item.id === props?.data?._id &&
+        item.size === props?.data?.size[activeSize]
+    );
+
+    if (existingItemIndex !== -1) {
+      // If item exists, update its quantity and total price
+      cart[existingItemIndex].quantity += quantity;
+      cart[existingItemIndex].totalPrice =
+        cart[existingItemIndex].quantity * sizePrice;
+    } else {
+      // Add new item
+      cart.push({
+        id: props?.data?._id,
+        name: props?.data?.name,
+        size: props?.data?.size[activeSize],
+        price: sizePrice,
+        totalPrice: currentPrice,
+        quantity,
+        image: props?.data?.images[0],
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+  };
+  const addtoCart = (data) => {
+    if (activeSize !== null) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      cartFields.productTitle = props?.data?.name;
+      cartFields.images = props?.data?.images[0];
+      cartFields.rating = props?.data?.rating;
+      cartFields.price = props?.data?.price;
+      cartFields.quantity = quantity;
+      cartFields.subTotal = currentPrice;
+      cartFields.productId = props?.data?._id;
+      cartFields.userId = user?.id;
+      cartFields.size = props?.data?.size[activeSize];
+
+      context.addtoCart(cartFields);
+    } else {
+      toast.error("❌ Please Select a Size!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: "#dc3545",
+          color: "#fff",
+          fontSize: "16px",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          padding: "10px 15px",
+        },
+        icon: "⚠️",
+      });
+    }
+  };
+
   return (
     <>
+      <ToastContainer position="bottom-right" autoClose={3000} />
       <Dialog
         open={true}
         onClose={props.closeProductModel}
@@ -140,7 +217,10 @@ const ProductModel = (props) => {
                 setInputVal={handleQuantityChange}
               />
 
-              <Button className="btn-blue btn-lg btn-big btn-round ml-1">
+              <Button
+                className="btn-blue btn-lg btn-big btn-round ml-1"
+                onClick={() => addtoCart(props.data)}
+              >
                 Add to Cart
               </Button>
             </div>

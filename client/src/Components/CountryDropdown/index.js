@@ -10,7 +10,13 @@ import { Mycontext } from "../../App";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
+const debounce = (func, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};
 const CountryDropdown = () => {
   const [isOpenModal, setisOpenModal] = useState(false);
   const [selectedTab, setSelectedTab] = useState(null);
@@ -21,27 +27,29 @@ const CountryDropdown = () => {
   const selectCity = (index, city) => {
     setSelectedTab(index);
     setisOpenModal(false);
-    context.setSelectCity(city.name); // Pass only the city's name, not the whole object
+    context.setSelectCity(city);
   };
 
   useEffect(() => {
     setCityList(context.countrList); // Set cityList when countrList updates
   }, [context.countrList]);
 
-  const filterList = (e) => {
+  const filterList = debounce((e) => {
     const keyWord = e.target.value.toLowerCase();
 
     if (keyWord) {
-      // Filter cities based on the 'name' field
+      // Filter cities based on the keyword
       const list = context.countrList.filter((item) => {
-        return item.name.toLowerCase().includes(keyWord); // Check against city name
+        return item.toLowerCase().includes(keyWord);
       });
       setCityList(list);
     } else {
       setCityList(context.countrList);
     }
-  };
-
+  }, 500);
+  useEffect(() => {
+    setCityList(context.countrList); // Set cityList when countrList updates
+  }, [context.countrList]);
   return (
     <>
       <Button className="countryDrop" onClick={() => setisOpenModal(true)}>
@@ -50,7 +58,7 @@ const CountryDropdown = () => {
           <span className="name">
             {context.selectCity !== ""
               ? context.selectCity.length > 15
-                ? context.selectCity.substr(0, 15) + "..."
+                ? context.selectCity?.substr(0, 15) + "..."
                 : context.selectCity
               : "Select City"}
           </span>
@@ -91,7 +99,7 @@ const CountryDropdown = () => {
                   onClick={() => selectCity(index, city)}
                   className={`${selectedTab === index ? "active" : ""}`}
                 >
-                  {city.name} {/* Display the city's name here */}
+                  {city}
                 </Button>
               </li>
             ))

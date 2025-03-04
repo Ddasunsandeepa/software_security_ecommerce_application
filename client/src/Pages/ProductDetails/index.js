@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ProductZoom from "../../Components/ProductZoom";
 import Rating from "@mui/material/Rating";
 import QuantityBox from "../../Components/QuantityDropDown";
@@ -10,13 +10,19 @@ import Tooltip from "@mui/material/Tooltip";
 import RelatedProducts from "./RelatedProducts";
 import { useParams } from "react-router-dom";
 import { fetchDataFromApi } from "../../utils/Api";
+import { Mycontext } from "../../App";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductDetails = () => {
+  const context = useContext(Mycontext);
   const [quantity, setQuantity] = useState(1);
   const [activeSize, setActiveSize] = useState(0);
   const [activeTabs, setActiveTabs] = useState(0);
   const [productData, setProductData] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(0);
+  const [addingCart, setaddingCart] = useState(false);
+  const [cartFields, setCartFields] = useState({});
   const { id } = useParams();
   // useEffect(() => {
   //   window.scrollTo(0, 0);
@@ -78,8 +84,45 @@ const ProductDetails = () => {
     );
   };
 
+  const addtoCart = () => {
+    if (activeSize !== null) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      cartFields.productTitle = productData?.name;
+      cartFields.images = productData?.images[0];
+      cartFields.rating = productData?.rating;
+      cartFields.price = productData?.price;
+      cartFields.quantity = quantity;
+      cartFields.subTotal = currentPrice;
+      cartFields.productId = productData?._id;
+      cartFields.userId = user?.id;
+      cartFields.size = productData?.size[activeSize];
+
+      context.addtoCart(cartFields);
+    } else {
+      toast.error("❌ Please Select a Size!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: "#dc3545",
+          color: "#fff",
+          fontSize: "16px",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          padding: "10px 15px",
+        },
+        icon: "⚠️",
+      });
+    }
+  };
+
   return (
     <div>
+      <ToastContainer position="bottom-right" autoClose={3000} />
       <section className="productDetails section">
         <div className="container">
           <div className="row">
@@ -157,7 +200,10 @@ const ProductDetails = () => {
                   inputVal={quantity}
                   setInputVal={handleQuantityChange}
                 />
-                <Button className="btn-blue btn-lg btn-big btn-round">
+                <Button
+                  className="btn-blue btn-lg btn-big btn-round"
+                  onClick={addtoCart}
+                >
                   <FaCartShopping /> &nbsp; Add to cart
                 </Button>
 

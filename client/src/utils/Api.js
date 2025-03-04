@@ -12,6 +12,7 @@ export const fetchDataFromApi = async (url) => {
 
 export const postData = async (url, formData) => {
   try {
+    console.log("Sending this data:", formData);
     console.log(`POST Request to: http://localhost:4000${url}`);
     const { data } = await axios.post(`http://localhost:4000${url}`, formData);
     return data;

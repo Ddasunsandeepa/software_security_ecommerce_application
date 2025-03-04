@@ -10,7 +10,7 @@ const cartSchema = mongoose.Schema({
     required: true,
   },
   rating: {
-    type: String,
+    type: Number,
     required: true,
   },
   price: {
@@ -26,11 +26,15 @@ const cartSchema = mongoose.Schema({
     required: true,
   },
   productId: {
-    type: Number,
+    type: String,
     required: true,
   },
   userId: {
-    type: Number,
+    type: String,
+    required: true,
+  },
+  size: {
+    type: String,
     required: true,
   },
 });

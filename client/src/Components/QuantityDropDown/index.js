@@ -1,8 +1,10 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa6";
+import { useCart } from "../../context";
 
-const QuantityBox = ({ inputVal, setInputVal }) => {
+const QuantityBox = ({ inputVal, setInputVal, productId }) => {
+  // const { updateQuantity } = useCart();
   const minus = () => {
     if (inputVal > 1) {
       setInputVal(inputVal - 1);
