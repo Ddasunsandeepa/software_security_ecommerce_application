@@ -4,7 +4,10 @@ import Rating from "@mui/material/Rating";
 import QuantityBox from "../../Components/QuantityDropDown";
 import { MdDelete } from "react-icons/md";
 import { Mycontext } from "../../App";
-import { editData, fetchDataFromApi } from "../../utils/Api";
+import { deleteData, editData, fetchDataFromApi } from "../../utils/Api";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { IoBagCheckOutline } from "react-icons/io5";
 
 const Cart = () => {
   const [activeSize, setActiveSize] = useState(null);
@@ -37,10 +40,23 @@ const Cart = () => {
     }
   };
 
-  const removeItem = (productId) => {
-    setCartData((prevCart) =>
-      prevCart.filter((item) => item._id !== productId)
-    );
+  const removeItem = (id) => {
+    setLoaing(true);
+    deleteData(`/api/cart/${id}`)
+      .then((res) => {
+        setCartData((prevCart) => prevCart.filter((item) => item._id !== id));
+        toast.success("Item removed from cart successfully!");
+        setTimeout(() => {
+          setLoaing(false);
+          fetchDataFromApi(`/api/cart`).then((res) => {
+            setCartData(res);
+          });
+        }, 1000);
+      })
+      .catch((error) => {
+        console.error("Error deleting item:", error);
+        toast.error("Failed to remove item. Please try again!");
+      });
   };
 
   // const selectedItem = (item) => {
@@ -91,6 +107,7 @@ const Cart = () => {
 
   return (
     <>
+      <ToastContainer position="bottom-right" autoClose={3000} />
       <div className="section cartPage">
         <div className="container">
           <h2 className="hd mb-0 ml-5">Your Cart</h2>
@@ -166,7 +183,7 @@ const Cart = () => {
                             <td d-flex align-items-inline>
                               <button
                                 className="btn btn-danger btn-sm"
-                                onClick={() => removeItem(item._id)}
+                                onClick={() => removeItem(item?._id)}
                               >
                                 <MdDelete /> &nbsp;Remove
                               </button>
@@ -207,7 +224,7 @@ const Cart = () => {
                 </div>
 
                 <button className="btn btn-primary btn-block btn-lg checkout-btn mt-3">
-                  Proceed to Checkout
+                  <IoBagCheckOutline /> &nbsp; Proceed to Checkout
                 </button>
               </div>
             </div>

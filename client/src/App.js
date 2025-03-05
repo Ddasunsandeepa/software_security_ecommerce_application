@@ -184,6 +184,7 @@ function App() {
     cartData,
     addingCart,
     setaddingCart,
+    
   };
 
   return (
