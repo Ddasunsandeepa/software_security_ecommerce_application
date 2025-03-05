@@ -17,6 +17,7 @@ import { FaShieldAlt } from "react-icons/fa";
 import { Logout, PersonAdd } from "@mui/icons-material";
 import { FaHeart } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
+import { fetchDataFromApi } from "../../utils/Api";
 
 const Header = () => {
   const [accountAnchorEl, setAccountAnchorEl] = useState(null);
@@ -46,9 +47,14 @@ const Header = () => {
       navigate("/SignIn");
     }, 2000);
   };
+
   const calculateSubtotal = () => {
+    if (!Array.isArray(context.cartdata) || context.cartdata.length === 0) {
+      return "0.00"; // ✅ When cart is empty, return "0.00"
+    }
+
     return context.cartdata
-      .reduce((total, item) => total + item.subTotal, 0)
+      .reduce((total, item) => total + (item.subTotal || 0), 0)
       .toFixed(2);
   };
 
@@ -58,7 +64,7 @@ const Header = () => {
         <div className="top-strip bg-blue">
           <div className="container">
             <p className="mb-0 mt-0 text-center">
-              Get <b>free delivery</b> on orders over <b>$100</b>
+              Get <b>free delivery</b> on orders over <b>$500</b>
             </p>
           </div>
         </div>
@@ -163,7 +169,7 @@ const Header = () => {
                         </Button>
                       </Link>
                       <span className="count  d-flex align-items-center justify-content-center">
-                        {context.cartdata.length}
+                        {context.cartdata?.length || 0}
                       </span>
                     </div>
                   </div>

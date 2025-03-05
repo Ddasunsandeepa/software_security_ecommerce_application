@@ -2220,3 +2220,48 @@ a:hover {
   cursor: wait;
   background: rgba(255, 255, 255, 0.5);
 }
+.empty-cart {
+  text-align: center;
+  padding: 30px;
+}
+
+.empty-cart-img {
+  width: 180px;
+  margin-bottom: 15px;
+  animation: floatUp 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-10px);
+  }
+}
+
+.empty-cart h4 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #722222;
+  margin-bottom: 10px;
+}
+
+.empty-cart p {
+  font-size: 16px;
+  color: #555;
+}
+
+.empty-cart .btn {
+  background-color: #ff4500;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  color: white;
+  transition: 0.3s;
+}
+
+.empty-cart .btn:hover {
+  background-color: #e03e00;
+}

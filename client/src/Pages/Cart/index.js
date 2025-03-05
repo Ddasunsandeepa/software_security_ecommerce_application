@@ -42,20 +42,27 @@ const Cart = () => {
 
   const removeItem = (id) => {
     setLoaing(true);
+
     deleteData(`/api/cart/${id}`)
       .then((res) => {
-        setCartData((prevCart) => prevCart.filter((item) => item._id !== id));
+        // ✅ Show toast message once before fetching new data
         toast.success("Item removed from cart successfully!");
+
+        // ✅ Update cart optimistically
+        setCartData((prevCart) => prevCart.filter((item) => item._id !== id));
+
+        // ✅ Fetch new data after a delay
         setTimeout(() => {
-          setLoaing(false);
           fetchDataFromApi(`/api/cart`).then((res) => {
             setCartData(res);
+            setLoaing(false);
           });
         }, 1000);
       })
       .catch((error) => {
         console.error("Error deleting item:", error);
         toast.error("Failed to remove item. Please try again!");
+        setLoaing(false);
       });
   };
 
@@ -100,8 +107,12 @@ const Cart = () => {
   };
 
   const calculateSubtotal = () => {
-    return cartData
-      .reduce((total, item) => total + item.subTotal, 0)
+    if (!Array.isArray(context.cartdata) || context.cartdata.length === 0) {
+      return "0.00";
+    }
+
+    return context.cartdata
+      .reduce((total, item) => total + (item.subTotal || 0), 0)
       .toFixed(2);
   };
 
@@ -129,68 +140,80 @@ const Cart = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartData?.length !== 0 &&
-                      cartData?.map((item, index) => {
-                        return (
-                          <tr>
-                            <td>
-                              <Link to={`/product/${item?.productId}`}>
-                                <div className="d-flex align-items-center cartItemImgWrapper">
-                                  <div className="imgWrapper">
-                                    <img
-                                      src={item?.images}
-                                      alt=""
-                                      className="w-100"
-                                      style={{
-                                        height: "100px",
-                                        width: "100px",
-                                      }}
-                                    />
-                                  </div>
-                                  <div
-                                    className="info px-3"
-                                    style={{ color: "#722222" }}
-                                  >
-                                    <h6 className="product-name">
-                                      {item?.productTitle?.substr(0, 26) +
-                                        "..."}
-                                    </h6>
-                                    <h6 className="product-name">
-                                      ({item.size})
-                                    </h6>
-                                    <Rating
-                                      name="read-only"
-                                      value={item.rating}
-                                      readOnly
-                                      precision={0.5}
-                                      size="small"
-                                    />
-                                  </div>
+                    {cartData?.length > 0 ? (
+                      cartData.map((item, index) => (
+                        <tr key={index}>
+                          <td>
+                            <Link to={`/product/${item?.productId}`}>
+                              <div className="d-flex align-items-center cartItemImgWrapper">
+                                <div className="imgWrapper">
+                                  <img
+                                    src={item?.images}
+                                    alt=""
+                                    className="w-100"
+                                    style={{ height: "100px", width: "100px" }}
+                                  />
                                 </div>
-                              </Link>
-                            </td>
-                            <td>${item.subTotal / item.quantity}</td>
-                            <td>
-                              <QuantityBox
-                                inputVal={item.quantity}
-                                setInputVal={(newQty) =>
-                                  updateQuantity(item._id, newQty)
-                                }
-                                productId={item._id}
-                              />
-                            </td>
-                            <td>${item.subTotal}</td>
-                            <td d-flex align-items-inline>
-                              <button
-                                className="btn btn-danger btn-sm"
-                                onClick={() => removeItem(item?._id)}
-                              >
-                                <MdDelete /> &nbsp;Remove
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                                <div
+                                  className="info px-3"
+                                  style={{ color: "#722222" }}
+                                >
+                                  <h6 className="product-name">
+                                    {item?.productTitle?.substr(0, 26) + "..."}
+                                  </h6>
+                                  <h6 className="product-name">
+                                    ({item.size})
+                                  </h6>
+                                  <Rating
+                                    name="read-only"
+                                    value={item.rating}
+                                    readOnly
+                                    precision={0.5}
+                                    size="small"
+                                  />
+                                </div>
+                              </div>
+                            </Link>
+                          </td>
+                          <td>${(item.subTotal / item.quantity).toFixed(2)}</td>
+                          <td>
+                            <QuantityBox
+                              inputVal={item.quantity}
+                              setInputVal={(newQty) =>
+                                updateQuantity(item._id, newQty)
+                              }
+                              productId={item._id}
+                            />
+                          </td>
+                          <td>${item.subTotal.toFixed(2)}</td>
+                          <td className="d-flex align-items-inline">
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() => removeItem(item?._id)}
+                            >
+                              <MdDelete /> &nbsp;Remove
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="text-center">
+                          <div className="empty-cart">
+                            <img
+                              src="/assets/empty-cart.png"
+                              alt="Empty Cart"
+                              className="empty-cart-img"
+                            />
+                            <h4>Your Cart is Empty</h4>
+                            <p>Looks like you haven't added anything yet.</p>
+                            <Link to="/" className="btn btn-primary">
+                              Go Shopping
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -208,7 +231,9 @@ const Cart = () => {
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <span>Shipping</span>
-                  <span className="text-muted font-weight-bold">Free</span>
+                  <span className="text-muted font-weight-bold">
+                    {calculateSubtotal() > 500 ? "Free" : `$${20}`}
+                  </span>
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -219,7 +244,8 @@ const Cart = () => {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <span>Total</span>
                   <span className="amount text-danger font-weight-bold">
-                    ${calculateSubtotal()}
+                    $
+                    {Number(calculateSubtotal()) + Number(calculateSubtotal() > 500 ? 0 : 20)}.00
                   </span>
                 </div>
 
