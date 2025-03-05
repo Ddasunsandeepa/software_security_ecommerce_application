@@ -24,7 +24,7 @@ const ProductItem = (props) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   useEffect(() => {
-    console.log(props.item);
+    // console.log(props.item);
   });
 
   return (
