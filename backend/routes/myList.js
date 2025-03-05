@@ -1,8 +1,7 @@
-const { Cart } = require("../models/cart");
+const { MyList } = require("../models/myList");
 const express = require("express");
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
-const pLimit = require("p-limit");
 
 cloudinary.config({
   cloud_name: process.env.cloudinary_Config_Cloud_Name,
@@ -10,16 +9,16 @@ cloudinary.config({
   api_secret: process.env.cloudinary_Config_Api_Secret,
 });
 
-// Get all cart items
+// Get all MyList items
 router.get("/", async (req, res) => {
   try {
-    const cartList = await Cart.find(req.query);
-    if (!cartList || cartList.length === 0) {
+    const myList = await MyList.find(req.query);
+    if (!myList || myList.length === 0) {
       return res
         .status(404)
-        .json({ success: false, message: "No cart items found" });
+        .json({ success: false, message: "No items found" });
     }
-    res.status(200).json(cartList);
+    res.status(200).json(myList);
   } catch (error) {
     res
       .status(500)
@@ -27,91 +26,88 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Add item to cart
+// Add item to MyList
 router.post("/add", async (req, res) => {
-  const Item = await Cart.findById(req.body.productId);
   try {
-    let cartItem = new Cart({
-      productTitle: req.body.productTitle,
-      images: req.body.images,
-      rating: req.body.rating,
-      price: req.body.price,
-      quantity: req.body.quantity,
-      subTotal: req.body.subTotal,
+    const itemExists = await MyList.findOne({
       productId: req.body.productId,
       userId: req.body.userId,
-      size: req.body.size,
     });
-    cartItem = await cartItem.save();
-    res.status(201).json(cartItem);
-  } catch (err) {
-    console.error("Cart Add Error:", err); // 🔥 Log error
+
+    if (itemExists) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Product already in MyList" });
+    }
+
+    const list = new MyList({
+      productTitle: req.body.productTitle,
+      images: req.body.images, // Ensure this matches the schema
+      rating: req.body.rating,
+      price: req.body.price,
+      productId: req.body.productId,
+      userId: req.body.userId,
+    });
+
+    const savedList = await list.save();
+    res.status(201).json(savedList);
+  } catch (error) {
     res.status(500).json({
-      error: err.message,
       success: false,
+      message: "Error adding item",
+      error: error.message,
     });
   }
 });
 
-// Delete cart item
+// Delete MyList item
 router.delete("/:id", async (req, res) => {
   try {
-    const cartItem = await Cart.findById(req.params.id);
-    if (!cartItem) {
-      return res.status(404).json({
-        message: "The cart item with given ID was not found!",
-        success: false,
-      });
-    }
-
-    await Cart.findByIdAndDelete(req.params.id);
-    res
-      .status(200)
-      .json({ success: true, message: "Cart item deleted successfully!" });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
-  }
-});
-
-// Update cart item
-router.put("/:id", async (req, res) => {
-  try {
-    const cartItem = await Cart.findByIdAndUpdate(
-      req.params.id,
-      {
-        productTitle: req.body.productTitle,
-        images: req.body.images,
-        rating: req.body.rating,
-        price: req.body.price,
-        quantity: req.body.quantity,
-        subTotal: req.body.subTotal,
-        productId: req.body.productId,
-        userId: req.body.userId,
-        size: req.body.size,
-      },
-      { new: true }
-    );
-
-    if (!cartItem) {
+    const item = await MyList.findById(req.params.id);
+    if (!item) {
       return res
         .status(404)
-        .json({ message: "Cart item not found!", success: false });
+        .json({ success: false, message: "Item not found!" });
     }
 
-    res.status(200).json(cartItem);
+    await MyList.findByIdAndDelete(req.params.id);
+    res
+      .status(200)
+      .json({ success: true, message: "MyList item deleted successfully!" });
   } catch (error) {
     res
       .status(500)
       .json({ success: false, message: "Server error", error: error.message });
   }
 });
-router.get(`/count`, async (req, res) => {
-  const cartItemsCount = await Cart.countDocuments();
-  if (!cartItemsCount) {
-    res.status(500).json({ success: false });
+
+// Get single MyList item
+router.get("/:id", async (req, res) => {
+  try {
+    const item = await MyList.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ message: "Item not found." });
+    }
+    res.status(200).json(item);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
-  return res.status(200).json(cartItemsCount);
 });
+
+// Get MyList item count
+router.get(`/count`, async (req, res) => {
+  try {
+    const count = await MyList.countDocuments();
+    res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching count",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

@@ -107,6 +107,16 @@ router.put("/:id", async (req, res) => {
       .json({ success: false, message: "Server error", error: error.message });
   }
 });
+router.get("/:id", async (req, res) => {
+  const catrItem = await Cart.findById(req.params.id);
+
+  if (!catrItem) {
+    res
+      .status(500)
+      .json({ message: "The cart item with the given ID was not found." });
+  }
+  return res.status(200).send(catrItem);
+});
 router.get(`/count`, async (req, res) => {
   const cartItemsCount = await Cart.countDocuments();
   if (!cartItemsCount) {
