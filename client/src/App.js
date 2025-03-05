@@ -50,7 +50,7 @@ function App() {
     email: "",
     userId: "",
   });
-  const [cartFields, setCartFields] = useState({});
+  const [cartdata, setcartdata] = useState();
   useEffect(() => {
     isOpenProductModel.open === true &&
       // alert(isOpenProductModel._id);
@@ -165,7 +165,11 @@ function App() {
       }
     });
   };
-
+  useEffect(() => {
+    fetchDataFromApi(`/api/cart`).then((res) => {
+      setcartdata(res);
+    });
+  });
   const values = {
     countrList,
     setSelectCity,
@@ -184,7 +188,8 @@ function App() {
     cartData,
     addingCart,
     setaddingCart,
-    
+    cartdata,
+    setcartdata,
   };
 
   return (

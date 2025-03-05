@@ -107,5 +107,11 @@ router.put("/:id", async (req, res) => {
       .json({ success: false, message: "Server error", error: error.message });
   }
 });
-
+router.get(`/count`, async (req, res) => {
+  const cartItemsCount = await Cart.countDocuments();
+  if (!cartItemsCount) {
+    res.status(500).json({ success: false });
+  }
+  return res.status(200).json(cartItemsCount);
+});
 module.exports = router;

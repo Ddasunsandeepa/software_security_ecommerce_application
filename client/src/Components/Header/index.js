@@ -46,6 +46,11 @@ const Header = () => {
       navigate("/SignIn");
     }, 2000);
   };
+  const calculateSubtotal = () => {
+    return context.cartdata
+      .reduce((total, item) => total + item.subTotal, 0)
+      .toFixed(2);
+  };
 
   return (
     <>
@@ -150,7 +155,7 @@ const Header = () => {
                   )}
 
                   <div className="ml-auto cartTab d-flex align-items-center">
-                    <span className="price">$3.29</span>
+                    <span className="price">${calculateSubtotal()}</span>
                     <div className="position-relative ml-2">
                       <Link to="/Cart">
                         <Button className="circle ml-2">
@@ -158,7 +163,7 @@ const Header = () => {
                         </Button>
                       </Link>
                       <span className="count  d-flex align-items-center justify-content-center">
-                        1
+                        {context.cartdata.length}
                       </span>
                     </div>
                   </div>
