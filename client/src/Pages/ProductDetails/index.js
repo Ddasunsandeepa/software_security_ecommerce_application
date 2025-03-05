@@ -102,7 +102,15 @@ const ProductDetails = () => {
 
   const addtoCart = () => {
     if (activeSize !== null) {
-      const user = JSON.parse(localStorage.getItem("user"));
+      let user = JSON.parse(localStorage.getItem("user"));
+
+      // If no user is logged in, generate an anonymous ID
+      if (!user) {
+        user = { id: `anonymous-${Date.now()}` }; // Create an anonymous ID using the timestamp
+        localStorage.setItem("user", JSON.stringify(user)); // Optionally save it in localStorage for future use
+      }
+
+      // Now use the user ID (either logged in or anonymous)
       cartFields.productTitle = productData?.name;
       cartFields.images = productData?.images[0];
       cartFields.rating = productData?.rating;
@@ -110,7 +118,7 @@ const ProductDetails = () => {
       cartFields.quantity = quantity;
       cartFields.subTotal = currentPrice;
       cartFields.productId = productData?._id;
-      cartFields.userId = user?.id;
+      cartFields.userId = user.id; // Use either logged-in or anonymous user ID
       cartFields.size = productData?.size[activeSize];
 
       context.addtoCart(cartFields);
@@ -135,6 +143,7 @@ const ProductDetails = () => {
       });
     }
   };
+
   const onchangeInput = (e) => {
     setReviews((prev) => ({
       ...prev,
@@ -172,6 +181,29 @@ const ProductDetails = () => {
   const addReview = (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem("user"));
+
+    // Check if user is logged in and has a userId
+    if (!user || !user._id) {
+      toast.error("❌ Please log in to submit your review!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: "#dc3545",
+          color: "#fff",
+          fontSize: "16px",
+          fontWeight: "bold",
+          borderRadius: "8px",
+          padding: "10px 15px",
+        },
+        icon: "⚠️",
+      });
+      return; // Exit the function if the user is not logged in
+    }
 
     const reviewData = {
       ...reviews,
