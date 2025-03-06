@@ -125,7 +125,7 @@ const ProductModel = (props) => {
     } else {
       toast.error("❌ Please Select a Size!", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -164,7 +164,7 @@ const ProductModel = (props) => {
     if (!user) {
       toast.error("Please log in to add items to your wishlist!", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
       return;
     }
@@ -181,7 +181,7 @@ const ProductModel = (props) => {
       if (isAlreadyInWishlist) {
         toast.info("This item is already in your wishlist! ❤️", {
           position: "bottom-right",
-          autoClose: 3000,
+          autoClose: 2000,
         });
         return; // Stop execution if the item is already in the wishlist
       }
@@ -201,25 +201,25 @@ const ProductModel = (props) => {
       if (res) {
         toast.success("Item added to wishlist! ❤️", {
           position: "bottom-right",
-          autoClose: 3000,
+          autoClose: 2000,
           theme: "colored",
         });
       } else {
         toast.error("Failed to add item. Try again!", {
           position: "bottom-right",
-          autoClose: 3000,
+          autoClose: 2000,
         });
       }
     } catch (error) {
       toast.error("Something went wrong!", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
     }
   };
   return (
     <>
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={2000} />
       <Dialog
         open={true}
         onClose={props.closeProductModel}

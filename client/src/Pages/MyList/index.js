@@ -97,7 +97,7 @@ const MyList = () => {
             ) : (
               <div className="empty-wishlist">
                 <img
-                  src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-illustration-download-in-svg-png-gif-file-formats--shopping-ecommerce-simple-error-state-pack-user-interface-illustrations-6024626.png?f=webp"
+                  src="https://cdn-icons-png.flaticon.com/128/12635/12635513.png"
                   alt="Empty Wishlist"
                   className="empty-wishlist-img"
                 />
