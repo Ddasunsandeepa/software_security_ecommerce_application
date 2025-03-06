@@ -9,7 +9,7 @@ import { MdCompareArrows } from "react-icons/md";
 import ProductZoom from "../ProductZoom";
 import { useContext, useEffect, useState } from "react";
 import { Mycontext } from "../../App";
-import { fetchDataFromApi } from "../../utils/Api";
+import { fetchDataFromApi, postData } from "../../utils/Api";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -143,7 +143,71 @@ const ProductModel = (props) => {
       });
     }
   };
+  // const addToMyList = (id) => {
+  //   const user = JSON.parse(localStorage.getItem("user"));
+  //   const data = {
+  //     productTitle: props?.data?.name,
+  //     images: props?.data?.images[0],
+  //     rating: Number(props?.data?.rating),
+  //     price: currentPrice,
+  //     productId: id,
+  //     userId: user?._id,
+  //   };
+  //   console.log(data);
+  //   postData(`/api/myList/add/`, data).then((res) => {
+  //     alert("success")
+  //   });
+  // };
+  const addToMyList = (id) => {
+    const user = JSON.parse(localStorage.getItem("user"));
 
+    if (!user) {
+      toast.error("Please log in to add items to your wishlist!", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    const data = {
+      productTitle: props?.data?.name,
+      images: props?.data?.images[0],
+      rating: Number(props?.data?.rating),
+      price: currentPrice,
+      productId: id,
+      userId: user?._id,
+    };
+
+    console.log(data);
+    postData(`/api/myList/add/`, data)
+      .then((res) => {
+        alert("success");
+        if (res) {
+          alert("success");
+          toast.success("Item added to wishlist! ❤️", {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.error("Failed to add item. Try again!", {
+            position: "bottom-right",
+            autoClose: 3000,
+          });
+        }
+      })
+      .catch((err) => {
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          autoClose: 3000,
+        });
+      });
+  };
   return (
     <>
       <ToastContainer position="bottom-right" autoClose={3000} />
@@ -225,7 +289,11 @@ const ProductModel = (props) => {
               </Button>
             </div>
             <div className="d-flex align-items-center mt-5 actions">
-              <Button className="btn-round btn-sml" variant="outlined">
+              <Button
+                className="btn-round btn-sml"
+                variant="outlined"
+                onClick={() => addToMyList(props.data?._id)}
+              >
                 <FaHeart /> &nbsp; ADD TO WISHLIST
               </Button>
               <Button className="btn-round btn-sml ml-3" variant="outlined">
