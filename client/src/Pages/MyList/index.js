@@ -9,53 +9,30 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoBagCheckOutline } from "react-icons/io5";
 
-const Cart = () => {
-  const [activeSize, setActiveSize] = useState(null);
-  const [cartFields, setCartFields] = useState({});
-  const [cartData, setCartData] = useState([]);
+const MyList = () => {
   const [loading, setLoaing] = useState(false);
+  const [myListData, setmyListData] = useState([]);
   const context = useContext(Mycontext);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((res) => {
-      setCartData(res);
+    fetchDataFromApi(`/api/myList?userId=${user?._id}`).then((res) => {
+      console.log(res);
+      setmyListData(res);
     });
   }, []);
-  const updateQuantity = (productId, newQuantity) => {
-    setCartData((prevCart) =>
-      prevCart.map((item) =>
-        item._id === productId
-          ? {
-              ...item,
-              quantity: newQuantity,
-              subTotal: item.price * newQuantity, // Update subtotal
-            }
-          : item
-      )
-    );
-
-    // Find the updated item and call selectedItem
-    const updatedItem = cartData.find((item) => item._id === productId);
-    if (updatedItem) {
-      selectedItem({ ...updatedItem, quantity: newQuantity });
-    }
-  };
 
   const removeItem = (id) => {
     setLoaing(true);
 
-    deleteData(`/api/cart/${id}`)
+    deleteData(`/api/myList/${id}`)
       .then((res) => {
-        // ✅ Show toast message once before fetching new data
         toast.success("Item removed from cart successfully!");
 
-        // ✅ Update cart optimistically
-        setCartData((prevCart) => prevCart.filter((item) => item._id !== id));
-
-        // ✅ Fetch new data after a delay
+        setmyListData((prevCart) => prevCart.filter((item) => item._id !== id));
         setTimeout(() => {
-          fetchDataFromApi(`/api/cart`).then((res) => {
-            setCartData(res);
+          const user = JSON.parse(localStorage.getItem("user"));
+          fetchDataFromApi(`/api/myList?userId=${user?._id}`).then((res) => {
+            setmyListData(res);
             setLoaing(false);
           });
         }, 1000);
@@ -65,46 +42,6 @@ const Cart = () => {
         toast.error("Failed to remove item. Please try again!");
         setLoaing(false);
       });
-  };
-
-  // const selectedItem = (item) => {
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   cartFields.productTitle = item?.name;
-  //   cartFields.images = item?.images[0];
-  //   cartFields.rating = item?.rating;
-  //   cartFields.price = item?.price;
-  //   cartFields.quantity = item?.quantity;
-  //   cartFields.subTotal = item?.currentPrice;
-  //   cartFields.productId = item?._id;
-  //   cartFields.userId = user?.id;
-  //   cartFields.size = item?.size;
-
-  //   editData(`/api/cart/${item?._id}`, cartFields).then((res) => {});
-  // };
-  const selectedItem = (item) => {
-    setLoaing(true);
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    const updatedCartItem = {
-      productTitle: item?.name,
-      rating: item?.rating,
-      price: item?.price,
-      quantity: item?.quantity,
-      subTotal: item?.price * item?.quantity, // Ensure updated subtotal
-      productId: item?._id,
-      userId: user?.id,
-      size: item?.size,
-    };
-
-    editData(`/api/cart/${item?._id}`, updatedCartItem).then((res) => {
-      console.log("Cart updated successfully!");
-      setTimeout(() => {
-        setLoaing(false);
-        fetchDataFromApi(`/api/cart`).then((res) => {
-          setCartData(res);
-        });
-      }, 1000);
-    });
   };
 
   const calculateSubtotal = () => {
@@ -265,4 +202,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default MyList;

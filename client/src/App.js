@@ -165,11 +165,14 @@ function App() {
       }
     });
   };
-  useEffect(() => {
-    fetchDataFromApi(`/api/cart`).then((res) => {
-      setcartdata(res);
-    });
-  });
+
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((res) => {
+        console.log(res);
+        setcartdata(res);
+      });
+    }, []);
   const values = {
     countrList,
     setSelectCity,
