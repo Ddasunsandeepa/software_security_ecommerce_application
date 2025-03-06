@@ -202,7 +202,7 @@ const Cart = () => {
                         <td colSpan="5" className="text-center">
                           <div className="empty-cart">
                             <img
-                              src="/assets/empty-cart.png"
+                              src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-illustration-download-in-svg-png-gif-file-formats--shopping-ecommerce-simple-error-state-pack-user-interface-illustrations-6024626.png?f=webp"
                               alt="Empty Cart"
                               className="empty-cart-img"
                             />

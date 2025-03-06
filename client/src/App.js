@@ -18,6 +18,7 @@ import { NoProductsFound } from "./Components/motionProduct";
 import BlogPage from "./Pages/blog/blog";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MyList from "./Pages/MyList";
 
 const Mycontext = createContext();
 
@@ -166,13 +167,14 @@ function App() {
     });
   };
 
-    useEffect(() => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((res) => {
-        console.log(res);
-        setcartdata(res);
-      });
-    }, []);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((res) => {
+      console.log(res);
+      setcartdata(res);
+    });
+  }, [cartdata]);
+
   const values = {
     countrList,
     setSelectCity,
@@ -209,6 +211,7 @@ function App() {
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/myList" element={<MyList />} />
         </Routes>
 
         {isHeaderFooterShow && <Footer />}
