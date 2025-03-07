@@ -170,7 +170,7 @@ function App() {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((res) => {
-      console.log(res);
+
       setcartdata(res);
     });
   }, [cartdata]);

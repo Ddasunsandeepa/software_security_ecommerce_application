@@ -20,7 +20,6 @@ import { fetchDataFromApi, postData } from "../../utils/Api";
 
 const ProductItem = (props) => {
   const context = useContext(Mycontext);
-  const [loading, setLoaing] = useState(false);
   const viewProductDetails = (_id) => {
     context.setisOpenProductModel({ _id: _id, open: true }); // Correct function call
   };
@@ -33,78 +32,69 @@ const ProductItem = (props) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const addToMyList = useCallback(
-    async (id) => {
-      if (loading) return; 
+  const addToMyList = useCallback(async (id) => {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-      setLoaing(true);
+    if (!user) {
+      toast.error("Please log in to add items to your wishlist!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        toastId: "login-toast", // Unique toastId to prevent duplicates
+      });
+      return;
+    }
 
-      const user = JSON.parse(localStorage.getItem("user"));
+    try {
+      const myListData = await fetchDataFromApi("/api/myList/");
 
-      if (!user) {
-        toast.error("Please log in to add items to your wishlist!", {
+      const isAlreadyInWishlist = myListData.some(
+        (item) => item.productId === id
+      );
+
+      if (isAlreadyInWishlist) {
+        toast.info("This item is already in your wishlist! ❤️", {
           position: "bottom-right",
           autoClose: 3000,
-          toastId: "login-toast", // Unique toastId to prevent duplicates
+          toastId: "wishlist-toast", // Unique toastId to prevent duplicates
         });
-        setLoaing(false);
+
         return;
       }
 
-      try {
-        const myListData = await fetchDataFromApi("/api/myList/");
+      const data = {
+        productTitle: props.item?.name,
+        images: props.item?.images[0],
+        rating: Number(props.item?.rating),
+        price: props.item?.price,
+        productId: id,
+        userId: user?._id,
+      };
 
-        const isAlreadyInWishlist = myListData.some(
-          (item) => item.productId === id
-        );
+      const res = await postData("/api/myList/add/", data);
 
-        if (isAlreadyInWishlist) {
-          toast.info("This item is already in your wishlist! ❤️", {
-            position: "bottom-right",
-            autoClose: 3000,
-            toastId: "wishlist-toast", // Unique toastId to prevent duplicates
-          });
-          setLoaing(false);
-          return;
-        }
-
-        const data = {
-          productTitle: props.item?.name,
-          images: props.item?.images[0],
-          rating: Number(props.item?.rating),
-          price: props.item?.price,
-          productId: id,
-          userId: user?._id,
-        };
-
-        const res = await postData("/api/myList/add/", data);
-
-        if (res) {
-          toast.success("Item added to wishlist! ❤️", {
-            position: "bottom-right",
-            autoClose: 3000,
-            theme: "colored",
-            toastId: "success-toast", // Unique toastId to prevent duplicates
-          });
-        } else {
-          toast.error("Failed to add item. Try again!", {
-            position: "bottom-right",
-            autoClose: 3000,
-            toastId: "error-toast", // Unique toastId to prevent duplicates
-          });
-        }
-      } catch (error) {
-        toast.error("Something went wrong!", {
+      if (res) {
+        toast.success("Item added to wishlist! ❤️", {
+          position: "bottom-right",
+          autoClose: 3000,
+          theme: "colored",
+          toastId: "success-toast", // Unique toastId to prevent duplicates
+        });
+      } else {
+        toast.error("Failed to add item. Try again!", {
           position: "bottom-right",
           autoClose: 3000,
           toastId: "error-toast", // Unique toastId to prevent duplicates
         });
-      } finally {
-        setLoaing(false); // Re-enable button
       }
-    },
-    [loading]
-  );
+    } catch (error) {
+      toast.error("Something went wrong!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        toastId: "error-toast", // Unique toastId to prevent duplicates
+      });
+    } finally {
+    }
+  }, []);
 
   return (
     <>
@@ -130,10 +120,7 @@ const ProductItem = (props) => {
             <Button onClick={() => viewProductDetails(props.item?._id)}>
               <TfiFullscreen />
             </Button>
-            <Button
-              onClick={() => addToMyList(props.item?._id)}
-              disabled={loading}
-            >
+            <Button onClick={() => addToMyList(props.item?._id)}>
               <IoMdHeartEmpty style={{ fontSize: "20px" }} />
             </Button>
           </div>
@@ -168,7 +155,6 @@ const ProductItem = (props) => {
       {context.isOpenProductModal && (
         <ProductModel closeProductModel={closeProductModel} />
       )}
-      {loading === true && <div className="loading"></div>}
     </>
   );
 };
