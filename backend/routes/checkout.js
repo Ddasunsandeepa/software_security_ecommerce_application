@@ -15,10 +15,10 @@ router.post("/", async (req, res) => {
 
   const lineItems = products.map((product) => ({
     price_data: {
-      currency: "inr",
+      currency: "USD",
       product_data: {
         name: product.productTitle?.substr(0, 30) + "...",
-        images: [product.image]
+        images: [product.images],
       },
       unit_amount: product.price * 100,
     },
@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
     line_items: lineItems,
     mode: "payment",
     shipping_address_collection: {
-      allowed_countries: ["US", "IN"],
+      allowed_countries: ["US", "LK"],
     },
     success_url: `${process.env.CLIENT_BASE_URL}/payment/complete?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.CLIENT_BASE_URL}/cancel`,
@@ -49,19 +49,16 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/payment/complete", async (req, res) => {
-  try {
-    const result = await Promise.all([
-      stripe.checkout.sessions.retrieve(req.query.session_id, {
-        expand: ["payment_intent.payment_method"],
-      }),
-      stripe.checkout.sessions.listLineItems(req.query.session_id),
-    ]);
+  const result = Promise.all([
+    stripe.checkout.sessions.retrieve(req.query.session_id, {
+      expand: ["payment_intent.payment_method"],
+    }),
+    stripe.checkout.sessions.listLineItems(req.query.session_id),
+  ]);
 
-    res.status(200).json(result);
-  } catch (error) {
-    console.error("Payment completion error:", error);
-    res.status(500).json({ error: "Failed to retrieve session." });
-  }
+  //console.log(JSON.stringify(await result))
+
+  res.status(200).send(JSON.stringify(await result));
 });
 
 router.get("/cancel", (req, res) => {
