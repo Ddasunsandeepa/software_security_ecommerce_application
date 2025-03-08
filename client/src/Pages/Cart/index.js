@@ -146,7 +146,7 @@ const Cart = () => {
       userId: userData?._id,
     };
 
-    console.log("Sending request to checkout API..."); // Debugging
+    console.log("Sending request to checkout API...");
 
     try {
       const response = await fetch(
@@ -162,29 +162,25 @@ const Cart = () => {
 
       console.log("Response received:", response); // Debugging
 
-      if (!response.ok) {
-        throw new Error("Failed to create checkout session");
-      }
+      // if (!response.ok) {
+      //   throw new Error("Failed to create checkout session");
+      // }
 
       const session = await response.json();
-      console.log("Stripe Session:", session); // Debugging
+      console.log("Stripe Session:", session);
 
       const result = await stripe.redirectToCheckout({
         sessionId: session.id,
       });
-      console.log(result); // Debugging result object
+      console.log(result);
 
       if (result.error) {
         console.error(result.error);
-      } else {
-        // Redirect to success page after successful payment
-        window.location.href = `/payment-success?session_id=${session.id}`;
       }
     } catch (error) {
       console.error("Checkout error:", error);
     }
   };
-
   return (
     <>
       <ToastContainer position="bottom-right" autoClose={2000} />

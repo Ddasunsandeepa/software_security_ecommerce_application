@@ -1,65 +1,56 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { CheckCircleIcon } from "@heroicons/react/solid";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import Paymentsuccess from "../../Components/paymentsuccess";
 
 const PaymentSuccess = () => {
-  const [paymentStatus, setPaymentStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [paymentStatus, setPaymentStatus] = useState("loading");
   const [error, setError] = useState(null);
-  const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (sessionId) {
-      // Fetch payment status from backend
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/payment/complete?session_id=${sessionId}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.message === "Payment Successful!") {
-            setPaymentStatus(data.message);
-          } else {
-            setPaymentStatus(data.message || "Payment failed.");
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError("Payment verification failed.");
-          setLoading(false);
-        });
-    }
-  }, [sessionId]);
+    // Simulate fetching payment status
+    setTimeout(() => {
+      // Mock success response (you can customize this with your logic)
+      const isPaymentSuccessful = true; // Change this based on your logic
+      if (isPaymentSuccessful) {
+        setPaymentStatus("success");
+      } else {
+        setPaymentStatus("failed");
+        setError("Payment failed. Please try again.");
+      }
+    }, 2000); // Simulating API response delay
+  }, []);
 
-  if (loading)
-    return <p className="text-center text-xl">⏳ Processing payment...</p>;
-  if (error)
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-white text-gray-900">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="bg-white p-8 rounded-lg shadow-xl border border-gray-300"
-        >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5 }}
-            className="text-center text-2xl font-semibold text-gray-900 mb-4"
-          >
-            ⏳ Processing success...
-          </motion.p>
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="w-16 h-16 border-4 border-t-4 border-gray-900 rounded-full animate-spin"
-          />
-        </motion.div>
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-2xl p-8 max-w-md text-center">
+        {paymentStatus === "loading" ? (
+          <div className="flex flex-col items-center">
+            <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+            <p className="mt-4 text-gray-700 text-lg">Processing payment...</p>
+          </div>
+        ) : paymentStatus === "success" ? (
+          <div className="flex flex-col items-center text-green-500">
+            <br />
+            <br />
+            <Paymentsuccess />
+          </div>
+        ) : (
+          <div className="flex flex-col items-center text-red-500">
+            <XCircle className="w-14 h-14" />
+            <p className="mt-4 text-lg font-semibold">{error}</p>
+            <button
+              onClick={() => navigate("/")}
+              className="mt-6 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
       </div>
-    );
+    </div>
+  );
 };
 
 export default PaymentSuccess;
