@@ -86,6 +86,12 @@ const Cart = () => {
     setLoaing(true);
     const user = JSON.parse(localStorage.getItem("user"));
 
+    if (!user) {
+      toast.error("Please log in to update your cart!", { autoClose: 3000 });
+      setLoaing(false);
+      return;
+    }
+
     const updatedCartItem = {
       productTitle: item?.name,
       rating: item?.rating,
@@ -97,16 +103,50 @@ const Cart = () => {
       size: item?.size,
     };
 
-    editData(`/api/cart/${item?._id}`, updatedCartItem).then((res) => {
+    editData(`/api/cart/${item?._id}`, updatedCartItem).then(() => {
       console.log("Cart updated successfully!");
+
       setTimeout(() => {
         setLoaing(false);
-        fetchDataFromApi(`/api/cart`).then((res) => {
-          setCartData(res);
+
+        // Fetch updated cart data from API
+        fetchDataFromApi(`/api/cart`).then((cartData) => {
+          // Save the cart data in localStorage
+          localStorage.setItem("cart", JSON.stringify(cartData));
+
+          // Update the state with the new cart data
+          setCartData(cartData);
         });
       }, 1000);
     });
   };
+
+  // Function to load cart from localStorage or API
+  const loadCart = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      localStorage.removeItem("cart");
+      setCartData([]); // ✅ Clear state properly
+      return;
+    }
+
+    const savedCart = JSON.parse(localStorage.getItem("cart"));
+
+    if (savedCart && savedCart.length > 0) {
+      setCartData(savedCart);
+    } else {
+      fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((cartData) => {
+        localStorage.setItem("cart", JSON.stringify(cartData));
+        setCartData(cartData);
+      });
+    }
+  };
+
+  // Call loadCart when the component mounts
+  useEffect(() => {
+    loadCart();
+  }, []);
 
   const calculateSubtotal = () => {
     if (!Array.isArray(context.cartdata) || context.cartdata.length === 0) {
@@ -117,6 +157,7 @@ const Cart = () => {
       .reduce((total, item) => total + (item.subTotal || 0), 0)
       .toFixed(2);
   };
+
   const checkout = async () => {
     console.log("Checkout function triggered!"); // Debugging
 
