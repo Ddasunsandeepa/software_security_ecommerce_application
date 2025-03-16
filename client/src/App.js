@@ -20,7 +20,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MyList from "./Pages/MyList";
 import PaymentSuccess from "./Pages/paymentSuccess";
-import Contact from "./Pages/contact";
+import Contact from "./Pages/Contact/contact";
+// import Contact from "./Pages/contact";
 
 const Mycontext = createContext();
 
@@ -214,6 +215,8 @@ function App() {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/myList" element={<MyList />} />
           <Route path="/payment/complete" element={<PaymentSuccess />} />
+          {/* <Route path="/contact" element={<Contact />} /> */}
+          {/* <Route path="/contact" element={<Contact />} /> */}
           <Route path="/contact" element={<Contact />} />
         </Routes>
 
