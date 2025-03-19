@@ -8,6 +8,11 @@ import logo1 from "../../assets/google-icon-2048x2048-pks9lbdv.png";
 import { postData } from "../../utils/Api";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { fireBase } from "../../firebase";
+
+const auth = getAuth(fireBase);
+const googleProvider = new GoogleAuthProvider();
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false); // New loading state
@@ -103,7 +108,62 @@ const SignIn = () => {
       setLoading(false); // Stop loading in all cases
     }
   };
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
 
+        const fields = {
+          name: user.providerData[0].displayName,
+          phone: user.providerData[0].phoneNumber,
+          email: user.providerData[0].email,
+          password: null,
+          isAdmin: false,
+        };
+        console.log("Posting data to backend:", fields);
+
+        postData("/api/user/authWithGoogle", fields).then((res) => {
+          try {
+            if (res.error !== true) {
+              localStorage.setItem("token", res.token);
+              localStorage.setItem("user", JSON.stringify(res.user));
+              const user = {
+                name: res.user.name,
+                email: res.user.email,
+                userId: res.user?.id,
+              };
+              toast.success("🎉 Logged in successfully!", {
+                theme: "colored",
+                position: "bottom-left",
+              });
+              setTimeout(() => {
+                history("/");
+                window.location.href = "/";
+              }, 2000);
+            } else {
+              toast.success(" Logged in successfully!", {
+                theme: "colored",
+                position: "bottom-left",
+              });
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        toast.error("❌ Failed to log in. Please try again!", {
+          theme: "colored",
+          position: "bottom-left",
+        });
+      });
+  };
   return (
     <>
       <ToastContainer position="bottom-left" autoClose={3000} />
@@ -196,7 +256,11 @@ const SignIn = () => {
               <h6 className="mt-4 text-center font-weight-bold">
                 Or continue wih social account
               </h6>
-              <Button className="logiGoogle mt-2" variant="outlined">
+              <Button
+                className="logiGoogle mt-2"
+                variant="outlined"
+                onClick={signInWithGoogle}
+              >
                 <img
                   style={{ height: "50px", width: "50px" }}
                   src={logo1}

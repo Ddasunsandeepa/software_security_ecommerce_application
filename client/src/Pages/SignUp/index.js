@@ -229,17 +229,6 @@ const SignUp = () => {
                   Sign In
                 </Link>
               </p>
-              <h6 className="mt-4 text-center font-weight-bold">
-                Or continue wih social account
-              </h6>
-              <Button className="logiGoogle mt-2" variant="outlined">
-                <img
-                  style={{ height: "50px", width: "50px" }}
-                  src={logo1}
-                  alt=""
-                />
-                Sign Up With Google
-              </Button>
             </form>
           </div>
         </div>
