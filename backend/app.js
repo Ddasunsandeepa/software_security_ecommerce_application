@@ -25,7 +25,7 @@ app.use(express.json());
 //Routes
 const userRoutes = require("./routes/user.js");
 const categoryRoutes = require("./routes/categories");
-const productRoutes = require("./routes/product");
+const productRoutes = require("./routes/product") ;
 const cart = require("./routes/cart.js");
 const productReviews = require("./routes/productReview.js");
 const myList = require("./routes/myList.js");
@@ -33,7 +33,7 @@ const checkout = require("./routes/checkout.js");
 
 app.use(`/uploads`, express.static("uploads"));
 app.use(`/api/category`, categoryRoutes);
-app.use(`/api/products`, productRoutes);
+app.use(`/api/products`, productRoutes) ;
 app.use(`/api/user`, userRoutes);
 app.use(`/api/cart`, cart);
 app.use(`/api/productReviews`, productReviews);

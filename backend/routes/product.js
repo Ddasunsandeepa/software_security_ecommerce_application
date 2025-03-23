@@ -16,8 +16,8 @@ async function uploadImages(images) {
     const results = await Promise.all(imageUploads);
     return results.map((result) => result.secure_url);
   } catch (err) {
-    console.error("Error uploading images:", err);
-    throw new Error("Image upload failed.");
+    console.error("Error uploading images:", err) ;
+    throw new Error("Image upload failed.") ;
   }
 }
 
