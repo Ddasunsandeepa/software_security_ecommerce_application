@@ -117,6 +117,7 @@ router.get("/:id", async (req, res) => {
   }
   return res.status(200).send(catrItem);
 });
+
 router.get(`/count`, async (req, res) => {
   const cartItemsCount = await Cart.countDocuments();
   if (!cartItemsCount) {

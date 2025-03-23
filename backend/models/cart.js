@@ -42,6 +42,7 @@ const cartSchema = mongoose.Schema({
 cartSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
+
 cartSchema.set("toJSON", {
   virtuals: true,
 });
