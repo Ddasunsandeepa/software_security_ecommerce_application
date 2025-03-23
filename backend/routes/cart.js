@@ -1,14 +1,6 @@
 const { Cart } = require("../models/cart");
 const express = require("express");
 const router = express.Router();
-const cloudinary = require("cloudinary").v2;
-const pLimit = require("p-limit");
-
-cloudinary.config({
-  cloud_name: process.env.cloudinary_Config_Cloud_Name,
-  api_key: process.env.cloudinary_Config_Api_Key,
-  api_secret: process.env.cloudinary_Config_Api_Secret,
-});
 
 // Get all cart items
 router.get("/", async (req, res) => {

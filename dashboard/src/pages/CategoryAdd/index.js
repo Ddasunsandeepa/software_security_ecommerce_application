@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { postData } from "../../utils/Api";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress"; // Import LinearProgress
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   const backgroundColor =
