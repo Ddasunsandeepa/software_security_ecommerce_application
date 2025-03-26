@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Reviews } from "@mui/icons-material";
 
 const ProductDetails = () => {
+  const [reviewData, setReviewData] = useState([]);
   const [reviews, setReviews] = useState({
     productId: "",
     customerName: "",
@@ -31,7 +32,10 @@ const ProductDetails = () => {
   const [currentPrice, setCurrentPrice] = useState(0);
   const [addingCart, setaddingCart] = useState(false);
   const [cartFields, setCartFields] = useState({});
+  const [reviewList, setReviewList] = useState();
+  const [loading, setLoaing] = useState(false);
   const { id } = useParams();
+
   // useEffect(() => {
   //   window.scrollTo(0, 0);
 
@@ -67,6 +71,10 @@ const ProductDetails = () => {
         // Save back to localStorage
         localStorage.setItem("recentlyViewed", JSON.stringify(recentlyViewed));
       }
+    });
+    fetchDataFromApi(`/api/productReviews?productId=${id}`).then((res) => {
+      console.log(res);
+      setReviewData(res);
     });
   }, [id]); // Re-fetch when ID changes
 
@@ -172,10 +180,9 @@ const ProductDetails = () => {
       customerName: user?.name,
     };
 
-    console.log(reviewData); // Ensure correct data before sending
+    setLoaing(true);
 
     postData("/api/productReviews/add", reviewData).then((res) => {
-      console.log(res);
       setReviews({
         productId: "",
         customerName: "",
@@ -183,8 +190,12 @@ const ProductDetails = () => {
         review: "",
         customerRating: "1",
       });
+      setTimeout(() => {
+        setLoaing(false);
+      }, 1000);
     });
   };
+
   return (
     <div>
       <ToastContainer position="bottom-right" autoClose={3000} />
@@ -488,6 +499,7 @@ const ProductDetails = () => {
           <RelatedProducts title="RECENTLY VIEWED PRODUCTS" type="recent" />
         </div>
       </section>
+      {loading === true && <div className="loading"></div>}
     </div>
   );
 };
