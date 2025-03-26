@@ -25,12 +25,14 @@ const userRoutes = require("./routes/user.js");
 const categoryRoutes = require("./routes/categories");
 const productRoutes = require("./routes/product");
 const cart = require("./routes/cart.js");
+const productReviews = require("./routes/productReview.js");
 
 app.use(`/uploads`, express.static("uploads"));
 app.use(`/api/category`, categoryRoutes);
 app.use(`/api/products`, productRoutes);
 app.use(`/api/user`, userRoutes);
 app.use(`/api/cart`, cart);
+app.use(`/api/productReviews`, productReviews);
 
 // Connect to MongoDB
 mongoose

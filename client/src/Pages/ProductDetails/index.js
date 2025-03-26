@@ -9,12 +9,20 @@ import { MdCompareArrows } from "react-icons/md";
 import Tooltip from "@mui/material/Tooltip";
 import RelatedProducts from "./RelatedProducts";
 import { useParams } from "react-router-dom";
-import { fetchDataFromApi } from "../../utils/Api";
+import { fetchDataFromApi, postData } from "../../utils/Api";
 import { Mycontext } from "../../App";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Reviews } from "@mui/icons-material";
 
 const ProductDetails = () => {
+  const [reviews, setReviews] = useState({
+    productId: "",
+    customerName: "",
+    customerId: "",
+    review: "",
+    customerRating: 1, // Default to 1 to avoid empty value issues
+  });
   const context = useContext(Mycontext);
   const [quantity, setQuantity] = useState(1);
   const [activeSize, setActiveSize] = useState(0);
@@ -119,7 +127,64 @@ const ProductDetails = () => {
       });
     }
   };
+  const onchangeInput = (e) => {
+    setReviews((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
+  const changeRating = (e) => {
+    setReviews((prev) => ({
+      ...prev,
+      customerRating: e.target.value,
+    }));
+  };
+  // const addReview = (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   const user = JSON.stringify(localStorage.getItem("user"));
+  //   console.log(Reviews);
+  //   setReviews(() => ({
+  //     ...reviews,
+  //     productId: id,
+  //     customerId: user?._id,
+  //   }));
+
+  //   // formData.append("productId", id);
+  //   // formData.append("customerName", user?.name);
+  //   // formData.append("customerId", user?._id);
+  //   // formData.append("review", reviews?.review);
+  //   // formData.append("customerRating", reviews?.customerRating);
+
+  //   // postData("api/productReviews/add", formData).then((res) => {
+  //   //   console.log(res);
+  //   // });
+  // };
+  const addReview = (e) => {
+    e.preventDefault();
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const reviewData = {
+      ...reviews,
+      productId: id,
+      customerId: user?._id,
+      customerName: user?.name,
+    };
+
+    console.log(reviewData); // Ensure correct data before sending
+
+    postData("/api/productReviews/add", reviewData).then((res) => {
+      console.log(res);
+      setReviews({
+        productId: "",
+        customerName: "",
+        customerId: "",
+        review: "",
+        customerRating: "1",
+      });
+    });
+  };
   return (
     <div>
       <ToastContainer position="bottom-right" autoClose={3000} />
@@ -361,7 +426,7 @@ const ProductDetails = () => {
                     <br />
                     <br />
                     <div className="col-md-10">
-                      <form className="reviewForm">
+                      <form className="reviewForm" onSubmit={addReview}>
                         <h4 className="mt-4">Add a review</h4>
 
                         <div className="form-group">
@@ -369,6 +434,8 @@ const ProductDetails = () => {
                             className="form-control"
                             placeholder="Write a Review"
                             name="review"
+                            onChange={onchangeInput}
+                            value={reviews.review}
                           ></textarea>
                         </div>
                         <div className="row">
@@ -378,16 +445,19 @@ const ProductDetails = () => {
                                 type="text"
                                 className="form-control"
                                 placeholder="Name"
-                                name="userName"
+                                name="customerName"
+                                onChange={onchangeInput}
+                                value={reviews.customerName}
                               />
                             </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group">
                               <Rating
-                                name="rating"
-                                value={4.5}
+                                name="customerRating"
+                                value={reviews.customerRating}
                                 precision={0.5}
+                                onChange={changeRating}
                               />
                             </div>
                           </div>
