@@ -182,6 +182,12 @@ const ProductDetails = () => {
 
     setLoaing(true);
 
+    // Optimistic UI update
+    setReviewData((prevReviews) => [
+      ...prevReviews,
+      { ...reviewData, _id: new Date().getTime(), createdAt: new Date() }, // Temporary data
+    ]);
+
     postData("/api/productReviews/add", reviewData).then((res) => {
       setReviews({
         productId: "",
@@ -336,7 +342,7 @@ const ProductDetails = () => {
                       setActiveTabs(2);
                     }}
                   >
-                    Reviews (3)
+                    Reviews ({reviewData.length})
                   </Button>
                 </li>
               </ul>
@@ -384,51 +390,90 @@ const ProductDetails = () => {
                     <div className="col-md-10">
                       <h3>Customer question & answers</h3>
                       <br />
-                      <div className="card p-4 reviewCard flex-row">
-                        <div className="image">
-                          <div className="rounded-circle">
-                            <img
-                              src="https://static.vecteezy.com/system/resources/thumbnails/037/098/807/small_2x/ai-generated-a-happy-smiling-professional-man-light-blurry-office-background-closeup-view-photo.jpg"
-                              alt=""
+                      <div className="review-section">
+                        <h3
+                          className="text-dark mb-4 text-center"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          Customer Reviews
+                        </h3>
+                        {reviewData.length > 0 ? (
+                          reviewData.map((review, index) => (
+                            <div
+                              key={index}
+                              className="card p-4 reviewCard flex-row mb-4"
                               style={{
-                                height: "100px",
-                                width: "100px",
-                                borderRadius: "50%",
+                                borderRadius: "12px",
+                                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                                backgroundColor: "#fff5f7",
+                                border: "1px solid #ffccd5",
                               }}
-                            />
-                          </div>
-                          <span className="text-g d-block text-center font-weight-bold">
-                            dasun
-                          </span>
-                        </div>
+                            >
+                              {/* Avatar Section */}
+                              <div className="image">
+                                <div
+                                  className="rounded-circle d-flex align-items-center justify-content-center"
+                                  style={{
+                                    height: "80px",
+                                    width: "80px",
+                                    borderRadius: "50%",
+                                    backgroundColor: "#ff5a80",
+                                    color: "#fff",
+                                    fontSize: "28px",
+                                    fontWeight: "bold",
+                                    textTransform: "uppercase",
+                                    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+                                  }}
+                                >
+                                  {review.customerName.charAt(0)}
+                                </div>
+                                <span
+                                  className="text-dark d-block text-center font-weight-bold mt-2"
+                                  style={{ fontSize: "14px" }}
+                                >
+                                  {review.customerName}
+                                </span>
+                              </div>
 
-                        <div className="info pl-5">
-                          <div className="d-flex align-items-center w-100">
-                            <h5 className="text-light">2024/10/10</h5>
-                            <div className="ml-auto">
-                              <Rating
-                                name="half-rating-read"
-                                value={4.5}
-                                precision={0.5}
-                                readOnly
-                                size="small"
-                              />
+                              {/* Review Content */}
+                              <div className="info pl-4" style={{ flex: "1" }}>
+                                <div className="d-flex align-items-center w-100 mb-2">
+                                  <h5
+                                    className="text-dark m-0"
+                                    style={{ fontSize: "14px" }}
+                                  >
+                                    {new Date().toISOString().split("T")[0]}
+                                  </h5>
+                                  <div className="ml-auto">
+                                    <Rating
+                                      name={`rating-${index}`}
+                                      value={review.customerRating}
+                                      precision={0.5}
+                                      readOnly
+                                      size="small"
+                                    />
+                                  </div>
+                                </div>
+                                <p
+                                  style={{
+                                    color: "#333",
+                                    fontSize: "15px",
+                                    lineHeight: "1.6",
+                                    backgroundColor: "#ffe6ea",
+                                    padding: "10px",
+                                    borderRadius: "8px",
+                                  }}
+                                >
+                                  {review.review}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                          <p>
-                            Morbi vitae erat auctor, eleifend nunc a, lobortis
-                            neque. Praesent aliquam dignissim viverra. Maecenas
-                            lacus odio, feugiat eu nunc sit amet, maximus
-                            sagittis dolor. Vivamus nisi sapien, elementum sit
-                            amet eros sit amet, ultricies cursus ipsum. Sed
-                            consequat luctus ligula. Curabitur laoreet rhoncus
-                            blandit. Aenean vel diam ut arcu pharetra dignissim
-                            ut sed leo. Vivamus faucibus, ipsum in vestibulum
-                            vulputate, lorem orci convallis quam, sit amet
-                            consequat nulla felis pharetra lacus. Duis semper
-                            erat mauris, sed egestas purus commodo vel.
+                          ))
+                        ) : (
+                          <p className="text-center text-dark">
+                            No reviews yet. Be the first to review!
                           </p>
-                        </div>
+                        )}
                       </div>
                     </div>
 
@@ -450,7 +495,7 @@ const ProductDetails = () => {
                           ></textarea>
                         </div>
                         <div className="row">
-                          <div className="col-md-5">
+                          {/*<div className="col-md-5">
                             <div className="form-group">
                               <input
                                 type="text"
@@ -461,7 +506,7 @@ const ProductDetails = () => {
                                 value={reviews.customerName}
                               />
                             </div>
-                          </div>
+                          </div>*/}
                           <div className="col-md-6">
                             <div className="form-group">
                               <Rating
