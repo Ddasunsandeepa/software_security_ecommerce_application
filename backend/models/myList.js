@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
      required: true,
    },
    images: {
+     // Changed from 'image' to 'images' to match your route
      type: String,
      required: true,
    },
@@ -30,9 +31,7 @@ const mongoose = require("mongoose");
  myListSchema.virtual("id").get(function () {
    return this._id.toHexString();
  });
- myListSchema.set("toJSON", {
-   virtuals: true,
- });
+ myListSchema.set("toJSON", { virtuals: true });
  
  exports.MyList = mongoose.model("MyList", myListSchema);
  exports.myListSchema = myListSchema; 
