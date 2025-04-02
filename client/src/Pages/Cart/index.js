@@ -16,7 +16,8 @@ const Cart = () => {
   const [loading, setLoaing] = useState(false);
   const context = useContext(Mycontext);
   useEffect(() => {
-    fetchDataFromApi(`/api/cart`).then((res) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+     fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((res) => {
       setCartData(res);
     });
   }, []);
@@ -245,7 +246,9 @@ const Cart = () => {
                   <span>Total</span>
                   <span className="amount text-danger font-weight-bold">
                     $
-                    {Number(calculateSubtotal()) + Number(calculateSubtotal() > 500 ? 0 : 20)}.00
+                    {Number(calculateSubtotal()) +
+                       Number(calculateSubtotal() > 500 ? 0 : 20)}
+                     .00
                   </span>
                 </div>
 
