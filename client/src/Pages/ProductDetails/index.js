@@ -234,6 +234,66 @@ const ProductDetails = () => {
     });
   };
 
+  const addToMyList = async (id) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      toast.error("Please log in to add items to your wishlist!", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    try {
+      // Wait for the API response
+      const myListData = await fetchDataFromApi("/api/myList/");
+
+      // Check if the item is already in the wishlist
+      const isAlreadyInWishlist = myListData.some(
+        (item) => item.productId === id
+      );
+
+      if (isAlreadyInWishlist) {
+        toast.info("This item is already in your wishlist! ❤️", {
+          position: "bottom-right",
+          autoClose: 3000,
+        });
+        return; // Stop execution if the item is already in the wishlist
+      }
+
+      const data = {
+        productTitle: productData.name,
+        images: productData.images[0],
+        rating: Number(productData.rating),
+        price: currentPrice,
+        productId: id,
+        userId: user?._id,
+      };
+
+      // Add item to wishlist
+      const res = await postData("/api/myList/add/", data);
+
+      if (res) {
+        toast.success("Item added to wishlist! ❤️", {
+          position: "bottom-right",
+          autoClose: 3000,
+          theme: "colored",
+        });
+      } else {
+        toast.error("Failed to add item. Try again!", {
+          position: "bottom-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("Something went wrong!", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
   return (
     <div>
       <ToastContainer position="bottom-right" autoClose={3000} />
@@ -323,6 +383,7 @@ const ProductDetails = () => {
 
                 <Tooltip title="Add to WishList" placement="top">
                   <Button
+                    onClick={() => addToMyList(productData?._id)}
                     className="btn-blue btn-lg btn-big btn-circle ml-4"
                     style={{ fontSize: "17px" }}
                   >

@@ -1,5 +1,11 @@
 import { Button } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { TfiFullscreen } from "react-icons/tfi";
@@ -8,10 +14,13 @@ import { IoMdHeartEmpty } from "react-icons/io";
 import ProductModel from "../ProductModal";
 import { Link } from "react-router-dom";
 import { Mycontext } from "../../App";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { fetchDataFromApi, postData } from "../../utils/Api";
 
 const ProductItem = (props) => {
   const context = useContext(Mycontext);
-
+  const [loading, setLoaing] = useState(false);
   const viewProductDetails = (_id) => {
     context.setisOpenProductModel({ _id: _id, open: true }); // Correct function call
   };
@@ -23,12 +32,78 @@ const ProductItem = (props) => {
   const handleLinkClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  useEffect(() => {
-    //console.log(props.item);
-  });
+  
+  const addToMyList = useCallback(
+    async (id) => {
+      if (loading) return; // Prevent multiple requests
+
+      setLoaing(true); // Disable button
+
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!user) {
+        toast.error("Please log in to add items to your wishlist!", {
+          position: "bottom-right",
+          autoClose: 3000,
+        });
+        setLoaing(false);
+        return;
+      }
+
+      try {
+        const myListData = await fetchDataFromApi("/api/myList/");
+
+        const isAlreadyInWishlist = myListData.some(
+          (item) => item.productId === id
+        );
+
+        if (isAlreadyInWishlist) {
+          toast.info("This item is already in your wishlist! ❤️", {
+            position: "bottom-right",
+            autoClose: 3000,
+          });
+          setLoaing(false);
+          return;
+        }
+
+        const data = {
+          productTitle: props.item?.name,
+          images: props.item?.images[0],
+          rating: Number(props.item?.rating),
+          price: props.item?.price,
+          productId: id,
+          userId: user?._id,
+        };
+
+        const res = await postData("/api/myList/add/", data);
+
+        if (res) {
+          toast.success("Item added to wishlist! ❤️", {
+            position: "bottom-right",
+            autoClose: 3000,
+            theme: "colored",
+          });
+        } else {
+          toast.error("Failed to add item. Try again!", {
+            position: "bottom-right",
+            autoClose: 3000,
+          });
+        }
+      } catch (error) {
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          autoClose: 3000,
+        });
+      } finally {
+        setLoaing(false); // Re-enable button
+      }
+    },
+    [loading]
+  );
 
   return (
     <>
+      <ToastContainer position="bottom-right" autoClose={3000} /> 
       <div className={`item productItem ${props.itemView}`}>
         <div className="imgWrapper" style={{ position: "relative", zIndex: 1 }}>
           <img
@@ -50,7 +125,10 @@ const ProductItem = (props) => {
             <Button onClick={() => viewProductDetails(props.item?._id)}>
               <TfiFullscreen />
             </Button>
-            <Button>
+            <Button
+               onClick={() => addToMyList(props.item?._id)}
+               disabled={loading}
+             >
               <IoMdHeartEmpty style={{ fontSize: "20px" }} />
             </Button>
           </div>
@@ -85,6 +163,7 @@ const ProductItem = (props) => {
       {context.isOpenProductModal && (
         <ProductModel closeProductModel={closeProductModel} />
       )}
+      {loading === true && <div className="loading"></div>}
     </>
   );
 };
