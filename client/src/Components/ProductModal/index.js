@@ -143,7 +143,7 @@ const ProductModel = (props) => {
       });
     }
   };
-  // const addToMyList = (id) => {
+  
    //   const user = JSON.parse(localStorage.getItem("user"));
    //   const data = {
    //     productTitle: props?.data?.name,
@@ -158,7 +158,7 @@ const ProductModel = (props) => {
    //     alert("success")
    //   });
    // };
-   const addToMyList = (id) => {
+   const addToMyList = async (id) => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
@@ -169,44 +169,53 @@ const ProductModel = (props) => {
       return;
     }
 
-    const data = {
-      productTitle: props?.data?.name,
-      images: props?.data?.images[0],
-      rating: Number(props?.data?.rating),
-      price: currentPrice,
-      productId: id,
-      userId: user?._id,
-    };
+    try {
+      // Wait for the API response
+      const myListData = await fetchDataFromApi("/api/myList/");
 
-    console.log(data);
-    postData(`/api/myList/add/`, data)
-      .then((res) => {
-        alert("success");
-        if (res) {
-          alert("success");
-          toast.success("Item added to wishlist! ❤️", {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        } else {
-          toast.error("Failed to add item. Try again!", {
-            position: "bottom-right",
-            autoClose: 3000,
-          });
-        }
-      })
-      .catch((err) => {
-        toast.error("Something went wrong!", {
+      // Check if the item is already in the wishlist
+      const isAlreadyInWishlist = myListData.some(
+        (item) => item.productId === id
+      );
+
+      if (isAlreadyInWishlist) {
+        toast.info("This item is already in your wishlist! ❤️", {
           position: "bottom-right",
           autoClose: 3000,
         });
+        return; // Stop execution if the item is already in the wishlist
+       }
+ 
+       const data = {
+         productTitle: props?.data?.name,
+         images: props?.data?.images[0],
+         rating: Number(props?.data?.rating),
+         price: currentPrice,
+         productId: id,
+         userId: user?._id,
+       };
+ 
+       // Add item to wishlist
+       const res = await postData("/api/myList/add/", data);
+ 
+       if (res) {
+         toast.success("Item added to wishlist! ❤️", {
+           position: "bottom-right",
+           autoClose: 3000,
+           theme: "colored",
+         });
+       } else {
+         toast.error("Failed to add item. Try again!", {
+           position: "bottom-right",
+           autoClose: 3000,
+         });
+       }
+     } catch (error) {
+       toast.error("Something went wrong!", {
+         position: "bottom-right",
+         autoClose: 3000,
       });
+    }
   };
   return (
     <>

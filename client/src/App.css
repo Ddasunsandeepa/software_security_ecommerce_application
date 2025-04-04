@@ -1433,7 +1433,7 @@ button {
 }
 .productListing1 {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   flex-wrap: wrap; /* Prevent wrapping to the next line */
   /* overflow-x: auto;  */
 }
@@ -1458,7 +1458,7 @@ button {
 .productListing1 {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
 }
 
 .productListing1 .productItem.one {
@@ -1550,7 +1550,7 @@ button {
 .productListing1 {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
   transition: all 0.4s ease-in-out; /* Smooth transition */
 }
 

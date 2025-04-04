@@ -35,9 +35,9 @@ const ProductItem = (props) => {
   
   const addToMyList = useCallback(
     async (id) => {
-      if (loading) return; // Prevent multiple requests
+      if (loading) return; 
 
-      setLoaing(true); // Disable button
+      setLoaing(true); 
 
       const user = JSON.parse(localStorage.getItem("user"));
 
@@ -45,6 +45,7 @@ const ProductItem = (props) => {
         toast.error("Please log in to add items to your wishlist!", {
           position: "bottom-right",
           autoClose: 3000,
+          toastId: "login-toast", // Unique toastId to prevent duplicates
         });
         setLoaing(false);
         return;
@@ -61,6 +62,7 @@ const ProductItem = (props) => {
           toast.info("This item is already in your wishlist! ❤️", {
             position: "bottom-right",
             autoClose: 3000,
+            toastId: "wishlist-toast", // Unique toastId to prevent duplicates
           });
           setLoaing(false);
           return;
@@ -82,17 +84,20 @@ const ProductItem = (props) => {
             position: "bottom-right",
             autoClose: 3000,
             theme: "colored",
+            toastId: "success-toast", // Unique toastId to prevent duplicates
           });
         } else {
           toast.error("Failed to add item. Try again!", {
             position: "bottom-right",
             autoClose: 3000,
+            toastId: "error-toast", // Unique toastId to prevent duplicates
           });
         }
       } catch (error) {
         toast.error("Something went wrong!", {
           position: "bottom-right",
           autoClose: 3000,
+          toastId: "error-toast", // Unique toastId to prevent duplicates
         });
       } finally {
         setLoaing(false); // Re-enable button

@@ -132,12 +132,14 @@ const Header = () => {
                           &nbsp; Profile
                         </MenuItem>
                         <Divider />
-                        <MenuItem onClick={handleCloseAccountMenu}>
-                          <ListItemIcon>
-                            <FaHeart />
-                          </ListItemIcon>
-                          My List
-                        </MenuItem>
+                        <Link to="/myList">
+                           <MenuItem onClick={handleCloseAccountMenu}>
+                             <ListItemIcon>
+                               <FaHeart />
+                             </ListItemIcon>
+                             My List
+                           </MenuItem>
+                        </Link>
                         <MenuItem onClick={handleCloseAccountMenu}>
                           <ListItemIcon>
                             <FaList />
