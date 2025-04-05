@@ -119,7 +119,7 @@ const Cart = () => {
 
   return (
     <>
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={2000} />
       <div className="section cartPage">
         <div className="container">
           <h2 className="hd mb-0 ml-5">Your Cart</h2>

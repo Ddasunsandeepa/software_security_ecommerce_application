@@ -8,7 +8,7 @@ import { BsCart3 } from "react-icons/bs";
 import SearchBox from "./SearchBox";
 import Avatar from "@mui/material/Avatar";
 import Navigation from "./Navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Mycontext } from "../../App";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,8 +18,10 @@ import { Logout, PersonAdd } from "@mui/icons-material";
 import { FaHeart } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
 import { fetchDataFromApi } from "../../utils/Api";
+import { AiOutlineHeart } from "react-icons/ai";
 
 const Header = () => {
+  const [mylistdata, setmylistdata] = useState();
   const [accountAnchorEl, setAccountAnchorEl] = useState(null);
   const context = useContext(Mycontext);
   const navigate = useNavigate();
@@ -31,6 +33,8 @@ const Header = () => {
   };
   const logout = () => {
     localStorage.clear();
+    localStorage.removeItem("user"); // Remove user from local storage
+    window.location.reload(); // Refresh to apply changes
     // Assuming this is used for alerts
 
     toast.info("👋 Logged out successfully. See you soon! 💨", {
@@ -57,7 +61,11 @@ const Header = () => {
       .reduce((total, item) => total + (item.subTotal || 0), 0)
       .toFixed(2);
   };
-
+  useEffect(() => {
+    fetchDataFromApi("/api/myList/").then((res) => {
+      setmylistdata(res);
+    });
+  }, [mylistdata]);
   return (
     <>
       <div className="headerWrapper">
@@ -82,7 +90,7 @@ const Header = () => {
 
                 <SearchBox />
 
-                <div className="part3 d-flex align-items-center ml-6 mr-4">
+                <div className="part3 d-flex align-items-center ml-6 mr-2">
                   {/* {context.isLogin !== true ? (
                     <Link to="/SignIn">
                       <Button className="btn-blue btn-round ml-4 mr-2">
@@ -156,11 +164,30 @@ const Header = () => {
                     </div>
                   ) : (
                     <Link to="/SignIn">
-                      <Button className="btn-blue btn-round ml-4 mr-2">
+                      <Button className="btn-blue btn-round ml-4 mr-1">
                         Sign In
                       </Button>
                     </Link>
                   )}
+                  <div className="ml-auto mr-3 cartTab d-flex align-items-center">
+                     <div className="position-relative ml-2">
+                       <Link to="/myList">
+                         <Button className="circle ml-2">
+                           <AiOutlineHeart />
+                         </Button>
+                       </Link>
+                       <span className="count d-flex align-items-center justify-content-center">
+                         {(() => {
+                           const user = JSON.parse(localStorage.getItem("user")); // Get user from localStorage
+                           return user
+                             ? mylistdata?.filter(
+                                 (item) => item.userId === user._id
+                               ).length || 0
+                             : 0;
+                         })()}
+                       </span>
+                     </div>
+                   </div>
 
                   <div className="ml-auto cartTab d-flex align-items-center">
                     <span className="price">${calculateSubtotal()}</span>

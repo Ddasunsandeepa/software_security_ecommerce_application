@@ -108,7 +108,7 @@ const ProductItem = (props) => {
 
   return (
     <>
-      <ToastContainer position="bottom-right" autoClose={3000} /> 
+      <ToastContainer position="bottom-right" autoClose={2000} /> 
       <div className={`item productItem ${props.itemView}`}>
         <div className="imgWrapper" style={{ position: "relative", zIndex: 1 }}>
           <img
