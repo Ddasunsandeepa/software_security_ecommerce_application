@@ -27,6 +27,7 @@ const productRoutes = require("./routes/product");
 const cart = require("./routes/cart.js");
 const productReviews = require("./routes/productReview.js");
 const myList = require("./routes/myList.js");
+const checkout = require("./routes/checkout.js");
 
 app.use(`/uploads`, express.static("uploads"));
 app.use(`/api/category`, categoryRoutes);
@@ -35,6 +36,7 @@ app.use(`/api/user`, userRoutes);
 app.use(`/api/cart`, cart);
 app.use(`/api/productReviews`, productReviews);
 app.use(`/api/myList`, myList);
+app.use(`/api/checkout`, checkout);
 
 // Connect to MongoDB
 mongoose

@@ -8,6 +8,7 @@ import { deleteData, editData, fetchDataFromApi } from "../../utils/Api";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoBagCheckOutline } from "react-icons/io5";
+import { loadStripe } from "@stripe/stripe-js";
 
 const Cart = () => {
   const [activeSize, setActiveSize] = useState(null);
@@ -115,6 +116,69 @@ const Cart = () => {
     return context.cartdata
       .reduce((total, item) => total + (item.subTotal || 0), 0)
       .toFixed(2);
+  };
+  const checkout = async () => {
+    console.log("Checkout function triggered!"); // Debugging
+
+    const stripe = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISH_KEY);
+    if (!stripe) {
+      console.error("Stripe failed to load.");
+      return;
+    }
+
+    const cartProducts = cartData.map((product) => ({
+      productTitle: product?.productTitle,
+      images: product?.images,
+      price: parseFloat(product?.subTotal.toFixed(2)),
+      quantity: product?.quantity,
+    }));
+
+    console.log("Cart Products:", cartProducts); // Debugging
+
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (!userData) {
+      console.error("User data not found in localStorage.");
+      return;
+    }
+
+    const body = {
+      products: cartProducts,
+      userId: userData?._id,
+    };
+
+    console.log("Sending request to checkout API..."); // Debugging
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/checkout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      console.log("Response received:", response); // Debugging
+
+      if (!response.ok) {
+        throw new Error("Failed to create checkout session");
+      }
+
+      const session = await response.json();
+      console.log("Stripe Session:", session); // Debugging
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (result.error) {
+        console.error(result.error);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+    }
   };
 
   return (
@@ -252,7 +316,10 @@ const Cart = () => {
                   </span>
                 </div>
 
-                <button className="btn btn-primary btn-block btn-lg checkout-btn mt-3">
+                <button
+                  className="btn btn-primary btn-block btn-lg checkout-btn mt-3"
+                  onClick={checkout}
+                >
                   <IoBagCheckOutline /> &nbsp; Proceed to Checkout
                 </button>
               </div>
