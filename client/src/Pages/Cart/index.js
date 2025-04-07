@@ -129,7 +129,7 @@ const Cart = () => {
     const cartProducts = cartData.map((product) => ({
       productTitle: product?.productTitle,
       images: product?.images,
-      price: parseFloat(product?.subTotal.toFixed(2)),
+      price: parseFloat((product?.subTotal / product?.quantity).toFixed(2)),
       quantity: product?.quantity,
     }));
 
@@ -172,9 +172,13 @@ const Cart = () => {
       const result = await stripe.redirectToCheckout({
         sessionId: session.id,
       });
+      console.log(result); // Debugging result object
 
       if (result.error) {
         console.error(result.error);
+      } else {
+        // Redirect to success page after successful payment
+        window.location.href = `/payment-success?session_id=${session.id}`;
       }
     } catch (error) {
       console.error("Checkout error:", error);
