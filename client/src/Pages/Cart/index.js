@@ -176,15 +176,11 @@ const Cart = () => {
 
       if (result.error) {
         console.error(result.error);
-      } else {
-        // Redirect to success page after successful payment
-        window.location.href = `/payment-success?session_id=${session.id}`;
       }
     } catch (error) {
       console.error("Checkout error:", error);
     }
   };
-
   return (
     <>
       <ToastContainer position="bottom-right" autoClose={2000} />
