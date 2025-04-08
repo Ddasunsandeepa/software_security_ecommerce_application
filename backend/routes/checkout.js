@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
     shipping_address_collection: {
       allowed_countries: ["US", "LK"],
     },
-    success_url: ${process.env.CLIENT_BASE_URL}/payment/complete?session_id={CHECKOUT_SESSION_ID},
+    success_url: `${process.env.CLIENT_BASE_URL}/payment/complete`,
     cancel_url: ${process.env.CLIENT_BASE_URL}/cancel,
   });
 
@@ -49,17 +49,27 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/payment/complete", async (req, res) => {
-  const result = Promise.all([
-    stripe.checkout.sessions.retrieve(req.query.session_id, {
+  try {
+    const sessionId = req.query.session_id;
+    if (!sessionId) {
+      return res.status(400).json({ message: "Session ID is required." });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ["payment_intent.payment_method"],
-    }),
-    stripe.checkout.sessions.listLineItems(req.query.session_id),
-  ]);
+    });
 
-  //console.log(JSON.stringify(await result))
-
-  res.status(200).send(JSON.stringify(await result));  
+    if (session.payment_status === "paid") {
+      return res.json({ message: "Payment Successful!" });
+    } else {
+      return res.json({ message: "Payment failed or pending." });
+    }
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    res.status(500).json({ message: "Server error while verifying payment." });
+  }
 });
+
 
 router.get("/cancel", (req, res) => {
   res.redirect("/");
