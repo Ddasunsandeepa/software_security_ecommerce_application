@@ -70,7 +70,6 @@ router.get("/payment/complete", async (req, res) => {
   }
 });
 
-
 router.get("/cancel", (req, res) => {
   res.redirect("/");
 });
