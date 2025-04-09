@@ -59,13 +59,22 @@ router.get("/payment/complete", async (req, res) => {
       expand: ["payment_intent.payment_method"],
     });
 
+    console.log("🔍 Retrieved Session Details:", session); // Log full session details
+
+    if (session.payment_intent) {
+      const paymentIntent = await stripe.paymentIntents.retrieve(
+        session.payment_intent
+      );
+      console.log("💰 Payment Intent Details:", paymentIntent); // Log Payment Intent Details
+    }
+
     if (session.payment_status === "paid") {
       return res.json({ message: "Payment Successful!" });
     } else {
       return res.json({ message: "Payment failed or pending." });
     }
   } catch (error) {
-    console.error("Error verifying payment:", error);
+    console.error("❌ Error verifying payment:", error);
     res.status(500).json({ message: "Server error while verifying payment." });
   }
 });

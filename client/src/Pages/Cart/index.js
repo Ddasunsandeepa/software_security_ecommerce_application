@@ -201,13 +201,14 @@ const Cart = () => {
         }
       );
 
-      console.log("Response received:", response); // Debugging
+      const responseBody = await response.json();
+      console.log("Response received:", responseBody); // Debugging
 
-      // if (!response.ok) {
-      //   throw new Error("Failed to create checkout session");
-      // }
+      if (!response.ok || !responseBody.id) {
+        throw new Error("Failed to create checkout session");
+      }
 
-      const session = await response.json();
+      const session = responseBody;
       console.log("Stripe Session:", session);
 
       const result = await stripe.redirectToCheckout({
@@ -222,6 +223,7 @@ const Cart = () => {
       console.error("Checkout error:", error);
     }
   };
+  
   return (
     <>
       <ToastContainer position="bottom-right" autoClose={2000} />
