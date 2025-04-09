@@ -20,6 +20,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MyList from "./Pages/MyList";
 import PaymentSuccess from "./Pages/paymentSuccess";
+import Contact from "./Pages/contact";
 
 const Mycontext = createContext();
 
@@ -167,7 +168,7 @@ function App() {
       }
     });
   };
-  
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     fetchDataFromApi(`/api/cart?userId=${user?._id}`).then((res) => {
@@ -213,6 +214,7 @@ function App() {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/myList" element={<MyList />} />
           <Route path="/payment/complete" element={<PaymentSuccess />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
 
         {isHeaderFooterShow && <Footer />}
