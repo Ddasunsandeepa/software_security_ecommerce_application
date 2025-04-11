@@ -148,4 +148,42 @@ router.put("/:id", async (req, res) => {
     res.send(user);
   }
 });
+
+router.post(`/authWithGoogle`, async (req, res) => {
+  const { name, phone, email, password, isAdmin } = req.body;
+  try {
+    const existingUser = await User.findOne({ email: email });
+    if (!existingUser) {
+      const result = await User.create({
+        name,
+        phone,
+        email,
+        password,
+        isAdmin,
+      });
+      const token = jwt.sign(
+        { email: result.email, id: result._id },
+        process.env.JSON_WEB_TOKEN_SECRET_KEY
+      );
+      res.status(200).json({
+        user: result,
+        token: token,
+        msg: "User login successfully",
+      });
+    } else {
+      const token = jwt.sign(
+        { email: existingUser.email, id: existingUser._id },
+        process.env.JSON_WEB_TOKEN_SECRET_KEY
+      );
+      res.status(200).send({
+        user: existingUser,
+        token: token,
+        msg: "User Login Successfully!",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
