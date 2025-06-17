@@ -1,7 +1,7 @@
-import React from "react";                          // Import React
-import { render, screen } from "@testing-library/react";  // Tools to render the component and query elements
-import Paymentsuccess from "../../Components/paymentsuccess/index";              // Import the component you want to test
-import "@testing-library/jest-dom";                // Add helpful matchers like toBeInTheDocument()
+import React from "react";                          
+import { render, screen } from "@testing-library/react";  
+import Paymentsuccess from "../../Components/paymentsuccess/index";            
+import "@testing-library/jest-dom";                
 
 test("renders payment success message", () => {
   // Render the component:  render() simulates what would happen if your component was actually shown in a browser.

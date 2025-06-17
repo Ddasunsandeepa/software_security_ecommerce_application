@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import PaymentSuccess from "../../Pages/paymentSuccess/index"; // Adjust the path if needed
+import PaymentSuccess from "../../Pages/paymentSuccess/index"; 
 import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
 

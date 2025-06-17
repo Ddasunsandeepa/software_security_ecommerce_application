@@ -26,6 +26,7 @@ describe('Footer Component', () => {
     renderWithRouter();
     const dessertsSection = screen.getByTestId('desserts-section');
 
+    
   const dessertLinks = [
     'Chocolate Lava Cake',
     'Cheesecake',

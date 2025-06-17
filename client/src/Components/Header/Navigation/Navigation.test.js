@@ -37,8 +37,8 @@ describe("Navigation Component", () => {
 
   test("renders and fetches categories and products", async () => {
     api.fetchDataFromApi
-      .mockResolvedValueOnce(mockCategories) // for /api/category
-      .mockResolvedValueOnce(mockProducts); // for /api/products
+      .mockResolvedValueOnce(mockCategories)
+      .mockResolvedValueOnce(mockProducts); 
 
     render(
       <Mycontext.Provider value={{}}>

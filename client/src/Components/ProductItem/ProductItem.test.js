@@ -28,7 +28,6 @@ jest.mock("../../utils/Api", () => ({
   postData: jest.fn(() => Promise.resolve(true)),
 }));
 
-// Import actual component after mocking
 import ProductItem from "./ProductItem";
 import { Mycontext } from "../../App";
 

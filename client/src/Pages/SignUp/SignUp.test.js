@@ -1,10 +1,10 @@
-// SignUp.test.js
+
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import SignUp from "./SignUp";
 import { BrowserRouter } from "react-router-dom";
 
-// Mock context
+
 const mockContextValue = {
   setIsHeaderFooterShow: jest.fn(),
 };

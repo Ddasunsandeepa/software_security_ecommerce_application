@@ -1,8 +1,9 @@
-// SearchBox.test.js
+
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import SearchBox from "./SearchBox"; // Adjust path if needed
 import userEvent from "@testing-library/user-event";
+
 
 describe("SearchBox component", () => {
   test("renders input and search button", () => {

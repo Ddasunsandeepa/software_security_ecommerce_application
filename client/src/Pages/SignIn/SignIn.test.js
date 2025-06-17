@@ -1,11 +1,10 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import SignIn from "../../Pages/SignIn/index"; // ✅ adjust if needed
+import SignIn from "../../Pages/SignIn/index"; 
 import { BrowserRouter } from "react-router-dom";
-import { Mycontext } from "../../App"; // ✅ adjust if needed
+import { Mycontext } from "../../App"; 
 
-// ✅ Prevent matchMedia error (e.g., from react-slick)
-// Mock matchMedia globally before running tests
+
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
@@ -36,13 +35,10 @@ describe("SignIn Component", () => {
       </Mycontext.Provider>
     );
 
-    // ✅ Check if Email input is rendered
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
 
-    // ✅ Check if Password input is rendered
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
 
-    // ✅ Check if "Sign In" button is present
     expect(screen.getByRole("button", { name: /sign in/i })).toBeInTheDocument();
   });
 });

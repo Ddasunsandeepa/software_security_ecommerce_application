@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CountryDropdown from "./index";
-import { Mycontext } from "../../App"; // 👈 Make sure this is the same path as your real App.js
+import { Mycontext } from "../../App"; 
 import "@testing-library/jest-dom/extend-expect";
 
 // Mock values for context
