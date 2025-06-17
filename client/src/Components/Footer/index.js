@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
 
         <div className="row mt-5 linkWraps">
-          <div className="col" ml-6>
+          <div className="col ml-6" data-testid="meals-section">
             <h5>MEALS & FAVOURITES</h5>
             <ul>
               <li>
@@ -66,7 +66,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className="col">
+          <div className="col" data-testid="desserts-section">
             <h5>DESSERTS & FAVOURITES</h5>
             <ul>
               <li>
@@ -92,7 +92,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className="col">
+          <div className="col" data-testid="drinks-section">
             <h5>DRINKS & FAVOURITES</h5>
             <ul>
               <li>
@@ -118,7 +118,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className="col">
+          <div className="col" data-testid="combo-section">
             <h5>COMBO & FAVOURITES</h5>
             <ul>
               <li>
@@ -128,7 +128,7 @@ const Footer = () => {
                 <Link to="#">Beef Tacos + Cheesecake + Iced Tea</Link>
               </li>
               <li>
-                <Link to="#">Veg Stir-Fry + Tiramisu + Coffee</Link>
+                <Link to="#">Veg Stir-Fry + Tiramisu(2) + Coffee</Link>
               </li>
               <li>
                 <Link to="#">

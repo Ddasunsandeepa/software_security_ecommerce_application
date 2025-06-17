@@ -1,6 +1,5 @@
-import React from "react";
 import Slider from "react-slick";
-
+import React from "react";
 const HomeBanner = () => {
   var settings = {
     dots: true,
